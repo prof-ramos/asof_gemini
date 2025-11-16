@@ -1,0 +1,50 @@
+# .vercelignore
+# Files and directories that should be excluded from the Vercel deployment
+
+# Testing
+/e2e
+/coverage
+*.spec.ts
+*.test.ts
+*.test.tsx
+playwright.config.ts
+playwright-report
+
+# Development
+.vscode
+.idea
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Documentation (deploy apenas o necessário)
+/docs/*.md
+README.md
+CHANGELOG.md
+CONTRIBUTING.md
+
+# Database (não enviar migrations locais)
+prisma/migrations/*/migration.sql
+*.db
+*.db-journal
+
+# Scripts de desenvolvimento
+/scripts
+
+# Environment files (usar Vercel Dashboard)
+.env
+.env.local
+.env.development
+.env.test
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/workflows
+
+# Bundle analyzer reports
+.next/analyze

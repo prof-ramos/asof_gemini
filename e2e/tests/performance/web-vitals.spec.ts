@@ -121,7 +121,6 @@ test.describe('Performance - Core Web Vitals', () => {
       const jsResources: number[] = [];
 
       page.on('response', async (response) => {
-        const url = response.url();
         const contentType = response.headers()['content-type'] || '';
 
         if (contentType.includes('javascript')) {

@@ -248,10 +248,6 @@ test.describe('Acessibilidade - WCAG 2.1 AA', () => {
       }
 
       if (currentTag === 'A') {
-        const href = await page.evaluate(() =>
-          (document.activeElement as HTMLAnchorElement)?.href
-        );
-
         await page.keyboard.press('Enter');
         await page.waitForTimeout(1000);
 
