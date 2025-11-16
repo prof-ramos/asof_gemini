@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import Image from 'next/image'
 import { Upload, X, CheckCircle, AlertCircle } from 'lucide-react'
 
 interface UploadedFile {
@@ -181,11 +182,15 @@ export default function MediaUpload({ onUploadComplete }: MediaUploadProps) {
               >
                 {/* Preview */}
                 {uploadedFile.file.type.startsWith('image/') ? (
-                  <img
-                    src={uploadedFile.preview}
-                    alt={uploadedFile.file.name}
-                    className="w-16 h-16 object-cover rounded"
-                  />
+                  <div className="relative w-16 h-16 rounded overflow-hidden">
+                    <Image
+                      src={uploadedFile.preview}
+                      alt={uploadedFile.file.name}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </div>
                 ) : (
                   <div className="w-16 h-16 bg-gray-100 rounded flex items-center justify-center">
                     <FileIcon type={uploadedFile.file.type} />

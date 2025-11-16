@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Plus, Image as ImageIcon } from 'lucide-react'
 import MediaUpload from '@/components/admin/MediaUpload'
 import MediaGrid from '@/components/admin/MediaGrid'
@@ -46,11 +46,6 @@ export default function MediaPage() {
     fetchMediaItems()
   }, [])
 
-  // Apply filters
-  useEffect(() => {
-    applyFilters()
-  }, [mediaItems, filters])
-
   const fetchMediaItems = async () => {
     setLoading(true)
     try {
@@ -72,7 +67,7 @@ export default function MediaPage() {
     }
   }
 
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...mediaItems]
 
     // Search filter
@@ -108,7 +103,12 @@ export default function MediaPage() {
     })
 
     setFilteredItems(filtered)
-  }
+  }, [mediaItems, filters])
+
+  // Apply filters
+  useEffect(() => {
+    applyFilters()
+  }, [applyFilters])
 
   const handleDelete = async (id: string) => {
     try {
