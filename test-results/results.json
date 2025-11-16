@@ -10,9 +10,7 @@
     "grep": {},
     "grepInvert": null,
     "maxFailures": 0,
-    "metadata": {
-      "actualWorkers": 3
-    },
+    "metadata": {},
     "preserveOutput": "always",
     "reporter": [
       [
@@ -43,9 +41,7 @@
         "outputDir": "/Users/gabrielramos/asof_gemini/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 3
-        },
+        "metadata": {},
         "id": "chromium",
         "name": "chromium",
         "testDir": "/Users/gabrielramos/asof_gemini/e2e",
@@ -59,9 +55,7 @@
         "outputDir": "/Users/gabrielramos/asof_gemini/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 3
-        },
+        "metadata": {},
         "id": "firefox",
         "name": "firefox",
         "testDir": "/Users/gabrielramos/asof_gemini/e2e",
@@ -75,9 +69,7 @@
         "outputDir": "/Users/gabrielramos/asof_gemini/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 3
-        },
+        "metadata": {},
         "id": "webkit",
         "name": "webkit",
         "testDir": "/Users/gabrielramos/asof_gemini/e2e",
@@ -91,9 +83,7 @@
         "outputDir": "/Users/gabrielramos/asof_gemini/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 3
-        },
+        "metadata": {},
         "id": "mobile-chrome",
         "name": "mobile-chrome",
         "testDir": "/Users/gabrielramos/asof_gemini/e2e",
@@ -107,9 +97,7 @@
         "outputDir": "/Users/gabrielramos/asof_gemini/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 3
-        },
+        "metadata": {},
         "id": "mobile-safari",
         "name": "mobile-safari",
         "testDir": "/Users/gabrielramos/asof_gemini/e2e",
@@ -123,9 +111,7 @@
         "outputDir": "/Users/gabrielramos/asof_gemini/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 3
-        },
+        "metadata": {},
         "id": "accessibility",
         "name": "accessibility",
         "testDir": "/Users/gabrielramos/asof_gemini/e2e",
@@ -150,144 +136,17 @@
       "stderr": "pipe"
     }
   },
-  "suites": [
+  "suites": [],
+  "errors": [
     {
-      "title": "example.spec.ts",
-      "file": "example.spec.ts",
-      "column": 0,
-      "line": 0,
-      "specs": [],
-      "suites": [
-        {
-          "title": "Exemplo de Teste E2E",
-          "file": "example.spec.ts",
-          "line": 8,
-          "column": 6,
-          "specs": [
-            {
-              "title": "deve acessar a homepage e verificar elementos básicos",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 5978,
-                      "errors": [],
-                      "stdout": [
-                        {
-                          "text": "✅ Teste de exemplo passou com sucesso!\n"
-                        }
-                      ],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-11-16T05:03:39.460Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "a30a6eba6312f6b87ea5-12dd73e25aee5a8d602b",
-              "file": "example.spec.ts",
-              "line": 9,
-              "column": 7
-            },
-            {
-              "title": "deve ter navegação funcional",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
-                      "status": "passed",
-                      "duration": 10169,
-                      "errors": [],
-                      "stdout": [
-                        {
-                          "text": "✅ Navegação para notícias funcionou!\n"
-                        }
-                      ],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-11-16T05:03:39.475Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "a30a6eba6312f6b87ea5-71a0a293959277643e02",
-              "file": "example.spec.ts",
-              "line": 31,
-              "column": 7
-            },
-            {
-              "title": "deve ser responsivo",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
-                      "status": "passed",
-                      "duration": 8827,
-                      "errors": [],
-                      "stdout": [
-                        {
-                          "text": "✅ Site é responsivo!\n"
-                        }
-                      ],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-11-16T05:03:39.453Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "a30a6eba6312f6b87ea5-87c818b029531486a2cc",
-              "file": "example.spec.ts",
-              "line": 56,
-              "column": 7
-            }
-          ]
-        }
-      ]
+      "message": "Error: Timed out waiting 120000ms from config.webServer.",
+      "stack": "Error: Timed out waiting 120000ms from config.webServer."
     }
   ],
-  "errors": [],
   "stats": {
-    "startTime": "2025-11-16T05:03:31.227Z",
-    "duration": 19283.957,
-    "expected": 3,
+    "startTime": "2025-11-16T07:23:55.858Z",
+    "duration": 319970.123,
+    "expected": 0,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0
