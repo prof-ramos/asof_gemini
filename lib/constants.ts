@@ -20,8 +20,12 @@ export const SITE_CONFIG = {
 
 export const NAV_ITEMS = [
   { label: 'Sobre', href: '/sobre' },
+  { label: 'Membros', href: '/membros' },
   { label: 'Atuação', href: '/atuacao' },
   { label: 'Notícias', href: '/noticias' },
+  { label: 'Revista', href: '/revista' },
+  { label: 'Convênios', href: '/convenios' },
+  { label: 'Eventos', href: '/eventos' },
   { label: 'Transparência', href: '/transparencia' },
   { label: 'Contato', href: '/contato' },
 ];
