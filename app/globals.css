@@ -3,6 +3,61 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Timing Functions Customizadas para Animações Elegantes */
+    --ease-elegant: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-sharp: cubic-bezier(0.4, 0, 0.6, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+    /* Durações Padrão */
+    --duration-instant: 0ms;
+    --duration-fast: 150ms;
+    --duration-quick: 250ms;
+    --duration-normal: 400ms;
+    --duration-slow: 600ms;
+    --duration-elegant: 800ms;
+    --duration-very-slow: 1200ms;
+
+    /* Delays para Stagger Effects */
+    --stagger-sm: 50ms;
+    --stagger-md: 100ms;
+    --stagger-lg: 150ms;
+    --stagger-xl: 200ms;
+
+    /* Transforms */
+    --translate-y-sm: 10px;
+    --translate-y-md: 20px;
+    --translate-y-lg: 40px;
+
+    /* Opacidades */
+    --opacity-subtle: 0.6;
+    --opacity-medium: 0.8;
+  }
+
+  /* Respeitar preferência de movimento reduzido (WCAG 2.1 AA) */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --duration-instant: 0ms;
+      --duration-fast: 0ms;
+      --duration-quick: 0ms;
+      --duration-normal: 0ms;
+      --duration-slow: 0ms;
+      --duration-elegant: 0ms;
+      --duration-very-slow: 0ms;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
   html {
     scroll-behavior: smooth;
   }
