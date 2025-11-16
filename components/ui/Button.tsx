@@ -93,6 +93,17 @@ const Button = ({
     );
   }
 
+  // Separar event handlers conflitantes entre React e Framer Motion
+  const {
+    onDrag,
+    onDragStart,
+    onDragEnd,
+    onAnimationStart,
+    onAnimationEnd,
+    onAnimationIteration,
+    ...buttonProps
+  } = props;
+
   return (
     <motion.button
       ref={buttonRef}
@@ -100,7 +111,7 @@ const Button = ({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       {...motionProps}
-      {...props}
+      {...(buttonProps as any)}
     >
       {children}
     </motion.button>

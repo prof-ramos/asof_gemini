@@ -4,4 +4,4 @@
  * Custom hooks for UI-related functionality (scroll, resize, etc.)
  */
 
-export { default as useScrollPosition } from './useScrollPosition';
+export { useScrollPosition } from './useScrollPosition';

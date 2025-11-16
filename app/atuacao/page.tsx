@@ -1,15 +1,11 @@
-import type { Metadata } from 'next';
+'use client';
+
 import { Globe, FileText, Shield, Users, Scale, Briefcase, Heart, Award } from 'lucide-react';
 import Container from '@/components/ui/Container';
 import Section from '@/components/ui/Section';
 import Card from '@/components/ui/Card';
 import IconCard from '@/components/ui/IconCard';
 import Button from '@/components/ui/Button';
-
-export const metadata: Metadata = {
-  title: 'Áreas de Atuação',
-  description: 'Conheça as principais frentes de trabalho da ASOF na defesa e valorização da carreira de Oficial de Chancelaria.',
-};
 
 const mainAreas = [
   {

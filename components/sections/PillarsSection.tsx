@@ -1,3 +1,5 @@
+'use client';
+
 import { Globe, FileText, Shield } from 'lucide-react';
 import Section from '@/components/ui/Section';
 import Container from '@/components/ui/Container';

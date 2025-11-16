@@ -43,14 +43,14 @@ export function useReducedMotion(): boolean {
       mediaQuery.addEventListener('change', listener);
     } else {
       // Fallback para navegadores antigos
-      mediaQuery.addListener(listener as (event: MediaQueryList) => void);
+      mediaQuery.addListener(listener as any);
     }
 
     return () => {
       if (mediaQuery.removeEventListener) {
         mediaQuery.removeEventListener('change', listener);
       } else {
-        mediaQuery.removeListener(listener as (event: MediaQueryList) => void);
+        mediaQuery.removeListener(listener as any);
       }
     };
   }, []);
