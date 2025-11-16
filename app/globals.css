@@ -31,4 +31,17 @@
       transform: translateY(0);
     }
   }
+
+  /* Text contrast utilities for better readability over images */
+  .text-shadow-soft {
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .text-shadow-medium {
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  .text-shadow-strong {
+    text-shadow: 0 3px 16px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.6);
+  }
 }

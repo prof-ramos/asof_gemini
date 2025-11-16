@@ -23,30 +23,30 @@ const HeroSection = () => {
 
       {/* Hero Content */}
       <Container className="relative z-10 text-center text-white pt-20">
-        <div className="inline-block mb-6 px-4 py-1 border border-white/30 rounded-full bg-white/10 backdrop-blur-sm">
-          <span className="text-xs uppercase tracking-[0.2em] font-medium">
+        <div className="inline-block mb-6 px-4 py-1 border border-white/40 rounded-full bg-white/20 backdrop-blur-sm shadow-lg">
+          <span className="text-xs uppercase tracking-[0.2em] font-medium text-shadow-soft">
             Serviço Exterior Brasileiro
           </span>
         </div>
-        <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif font-medium mb-8 leading-tight animate-fade-in-up">
+        <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif font-medium mb-8 leading-tight animate-fade-in-up text-shadow-strong">
           Excelência em <br />
           <span className="italic text-accent">Gestão</span> e Serviço Consular.
         </h2>
-        <p className="text-lg md:text-xl text-slate-100 max-w-2xl mx-auto mb-8 font-light leading-relaxed opacity-90">
+        <p className="text-lg md:text-xl text-white max-w-2xl mx-auto mb-8 font-light leading-relaxed text-shadow-medium">
           Representamos os Oficiais de Chancelaria, pilar fundamental da estrutura
           e funcionamento do Ministério das Relações Exteriores do Brasil.
         </p>
         <div className="flex flex-col md:flex-row gap-4 justify-center">
           <Button variant="highlight">Junte-se à Associação</Button>
-          <button className="px-8 py-3 border border-white text-white hover:bg-white hover:text-primary transition-all duration-300 uppercase text-sm tracking-widest font-medium rounded-sm">
+          <button className="px-8 py-3 border-2 border-white text-white hover:bg-white hover:text-primary transition-all duration-300 uppercase text-sm tracking-widest font-medium rounded-sm shadow-lg">
             Saiba Mais
           </button>
         </div>
       </Container>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-white/50">
-        <ArrowRight className="transform rotate-90" size={24} aria-hidden="true" />
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-white/70">
+        <ArrowRight className="transform rotate-90 drop-shadow-lg" size={24} aria-hidden="true" />
       </div>
     </section>
   );
