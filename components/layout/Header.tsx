@@ -42,7 +42,7 @@ const Header = () => {
         <Link href="/" className="flex items-center gap-4 group">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://asof.org.br/img/asof.svg"
+            src="/images/asof-logo.svg"
             alt="ASOF Logo"
             width="32"
             height="32"
