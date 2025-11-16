@@ -11,6 +11,9 @@ import Badge from '@/components/ui/Badge';
 import { formatDate } from '@/lib/utils';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 
+// ISR: Revalidate every 2 hours (7200 seconds) - news don't change often
+export const revalidate = 7200;
+
 interface Props {
   params: Promise<{ slug: string }>;
 }

@@ -1,9 +1,33 @@
 import type { NextConfig } from 'next';
 import createMDX from '@next/mdx';
+import bundleAnalyzer from '@next/bundle-analyzer';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+
+  // Performance budgets para alertar sobre grandes aumentos
+  experimental: {
+    webpackBuildWorker: true,
+  },
+
+  webpack: (config, { dev, isServer }) => {
+    // Performance warnings para chunks grandes
+    if (!dev && !isServer) {
+      config.optimization.splitChunks.chunks = 'all';
+      config.optimization.splitChunks.cacheGroups = {
+        ...config.optimization.splitChunks.cacheGroups,
+        // Separar grandes bibliotecas como lucide-react
+        lucide: {
+          test: /[\\/]node_modules[\\/]lucide-react[\\/]/,
+          name: 'lucide-react',
+          chunks: 'all',
+          priority: 10,
+        },
+      };
+    }
+    return config;
+  },
 
   images: {
     formats: ['image/avif', 'image/webp'],
@@ -27,6 +51,7 @@ const nextConfig: NextConfig = {
 
   async headers() {
     return [
+      // Headers para todas as páginas
       {
         source: '/:path*',
         headers: [
@@ -63,4 +88,8 @@ const withMDX = createMDX({
   },
 });
 
-export default withMDX(nextConfig);
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+export default withBundleAnalyzer(withMDX(nextConfig));

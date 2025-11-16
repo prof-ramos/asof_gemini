@@ -1,8 +1,12 @@
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { playfair, inter } from '@/lib/fonts';
 import { SITE_CONFIG } from '@/lib/constants';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import SWRegister from '@/components/SWRegister';
+import WebVitalsMonitor from '@/components/WebVitalsMonitor';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -66,6 +70,8 @@ export const metadata: Metadata = {
     icon: '/icons/favicon.ico',
     apple: '/icons/apple-touch-icon.png',
   },
+
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
@@ -79,6 +85,10 @@ export default function RootLayout({
         <Header />
         <main className="min-h-screen">{children}</main>
         <Footer />
+        <SWRegister />
+        <WebVitalsMonitor />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

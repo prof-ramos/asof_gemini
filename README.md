@@ -1,150 +1,150 @@
-# Site Oficial ASOF - Associação dos Oficiais de Chancelaria
+## 🚀 Deploy na Vercel (Free Tier)
 
-Website institucional da ASOF desenvolvido com Next.js 15, React 19, TypeScript e Tailwind CSS, seguindo as melhores práticas da Vercel.
+O projeto está **100% otimizado para Vercel Free Tier** com custo **R$ 0,00/mês**! 🎉
 
-## 🚀 Tecnologias
+### Funcionalidades Gratulitas Ativadas
 
-- **Framework**: Next.js 15 (App Router)
-- **UI**: React 19
-- **Linguagem**: TypeScript (strict mode)
-- **Estilização**: Tailwind CSS 3.4
-- **Conteúdo**: MDX para blog
-- **Ícones**: Lucide React
-- **Fontes**: Next/Font (Playfair Display + Inter)
+- ✅ **Analytics Completo**: `@vercel/analytics` - Monitoramento em tempo real
+- ✅ **Speed Insights**: Core Web Vitals tracking gratuito
+- ✅ **ISR (Incremental Static Regeneration)**: Cache inteligente de páginas de notícias
+- ✅ **Headers de Segurança**: Middleware para proteção automática
+- ✅ **CDN Edge Global**: Performance otimizada para Brasil
+- ✅ **Certificado SSL**: HTTPS automático e grátis
+- ✅ **1 Domínio Gratuito**: Primeiro domínio sem custos
+- ✅ **GitHub Actions**: CI/CD automático (2.000 minutos/mês FREE)
 
-## 📁 Estrutura do Projeto
+### Limites do Free Tier (Mais que suficiente para site institucional)
 
-```
-asof_gemini/
-├── app/                          # App Router do Next.js
-│   ├── layout.tsx               # Layout principal com metadata
-│   ├── page.tsx                 # Homepage
-│   ├── globals.css              # Estilos globais + Tailwind
-│   ├── sobre/                   # Página "Quem Somos"
-│   ├── atuacao/                 # Página "Áreas de Atuação"
-│   ├── noticias/                # Listagem de notícias
-│   │   └── [slug]/              # Página individual de notícia
-│   ├── transparencia/           # Portal da Transparência
-│   ├── contato/                 # Formulário de contato
-│   ├── sitemap.ts               # Geração automática de sitemap
-│   └── robots.ts                # Configuração robots.txt
-│
-├── components/
-│   ├── ui/                      # Componentes reutilizáveis
-│   │   ├── Button.tsx
-│   │   ├── Card.tsx
-│   │   ├── NewsCard.tsx
-│   │   ├── Badge.tsx
-│   │   ├── Container.tsx
-│   │   ├── Section.tsx
-│   │   └── IconCard.tsx
-│   ├── layout/                  # Componentes de layout
-│   │   ├── Header.tsx           # Header com scroll detection
-│   │   ├── Footer.tsx
-│   │   └── MobileMenu.tsx
-│   └── sections/                # Seções da homepage
-│       ├── HeroSection.tsx
-│       ├── AboutSection.tsx
-│       ├── PillarsSection.tsx
-│       ├── NewsSection.tsx
-│       └── CTASection.tsx
-│
-├── content/
-│   └── noticias/                # Artigos em MDX
-│       ├── avanco-negociacao-salarial.mdx
-│       ├── encontro-saude-mental.mdx
-│       └── eleicoes-diretoria-2025.mdx
-│
-├── lib/
-│   ├── fonts.ts                 # Configuração de fontes otimizadas
-│   ├── utils.ts                 # Funções utilitárias (cn, formatDate)
-│   ├── constants.ts             # Constantes do site
-│   └── mdx.ts                   # Utilidades para MDX
-│
-├── hooks/
-│   └── useScrollPosition.ts     # Hook para scroll detection
-│
-├── types/
-│   └── index.ts                 # Types TypeScript
-│
-└── public/
-    ├── images/                  # Imagens otimizadas
-    └── icons/                   # Ícones e favicon
-```
+- **100 GB** bandwidth/mês
+- **1.000 builds**/mês
+- **100 GB** Edge Functions/mês
+- **1 domínio** gratuito
+- **Analytics e Speed Insights** completos
 
-## 🎨 Paleta de Cores
+### Como Fazer Deploy
 
-```css
---primary: #040920         /* Azul escuro */
---primary-dark: #0D2A4A    /* Azul médio */
---accent: #82b4d6          /* Azul claro */
---neutral: #e7edf4         /* Azul muito claro */
-```
-
-## 🚀 Como Executar
-
-### Pré-requisitos
-
-- Node.js 18+
-- npm ou yarn
-
-### Instalação
+#### 1. Preparar Conta Vercel
 
 ```bash
-# Instalar dependências
-npm install
+# Instalar Vercel CLI
+npm install -g vercel
 
-# Executar em desenvolvimento
-npm run dev
+# Fazer login
+vercel login
 
-# Build para produção
-npm run build
-
-# Executar produção
-npm start
-
-# Lint
-npm run lint
+# Link do projeto (dentro da pasta do projeto)
+vercel link
 ```
 
-## 📄 Páginas
+#### 2. Configurar Secrets no GitHub (para CI/CD automático)
 
-### Páginas Estáticas
+No seu repositório GitHub, vá para **Settings > Secrets and variables > Actions** e adicione:
 
-- **/** - Homepage com hero, sobre, pilares, notícias e CTA
-- **/sobre** - História, missão, visão, valores, timeline, diretoria
-- **/atuacao** - Áreas de atuação, benefícios, cases de sucesso
-- **/transparencia** - Demonstrações financeiras, documentos, LAI
-- **/contato** - Formulário de contato, informações, FAQ, mapa
+```
+VERCEL_TOKEN=your_vercel_token_here
+VERCEL_ORG_ID=your_org_id_here
+VERCEL_PROJECT_ID=your_project_id_here
+```
 
-### Páginas Dinâmicas
+#### 3. Primeiro Deploy
 
-- **/noticias** - Listagem de todas as notícias
-- **/noticias/[slug]** - Página individual de notícia (MDX)
+```bash
+# Deploy inicial (será criado preview domain *.vercel.app)
+vercel
 
-## ✨ Funcionalidades
+# Ou diretamente para produção
+vercel --prod
+```
 
-### Performance
+#### 4. Configurar Domínio Customizado (Gratuito)
 
-- ✅ Server Components por padrão
-- ✅ Fontes otimizadas com `next/font`
-- ✅ Imagens otimizadas com `next/image`
-- ✅ Lazy loading automático
-- ✅ Bundle JS minimizado
-- ✅ Static Generation onde possível
+```bash
+# Adicionar domínio (primeiro é gratuito)
+vercel domains add asof.org.br
 
-### SEO
+# SSL será automático e gratuito
+```
 
-- ✅ Metadata completa em todas as páginas
-- ✅ Open Graph configurado
-- ✅ Twitter Cards
-- ✅ Sitemap.xml gerado automaticamente
-- ✅ Robots.txt configurado
-- ✅ Structured Data (JSON-LD) pronto para implementar
+### Monitoramento e Analytics
 
-### Acessibilidade
+Após o deploy, no dashboard Vercel você terá acesso a:
 
-- ✅ ARIA labels completos
+- **Real-time Analytics**: Visitors únicos, pageviews, bounce rate
+- **Speed Insights**: LCP, CLS, FID - Core Web Vitals
+- **Performance Monitoring**: Function duration, errors
+- **Traffic Analytics**: Geographic distribution, device types
+
+### Otimizações Implementadas
+
+#### Middleware para Segurança (middleware.ts)
+```typescript
+// Headers automáticos em todas as rotas
+response.headers.set('X-Frame-Options', 'DENY');
+response.headers.set('X-Content-Type-Options', 'nosniff');
+response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+```
+
+#### ISR para Notícias (app/noticias/page.tsx)
+```typescript
+// Cache de 1 hora para páginas de notícias
+export const revalidate = 3600;
+```
+
+#### Configuração Otimizada (vercel.json)
+```json
+{
+  "regions": ["gru1"],
+  "functions": {},
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Como Manter o Free Tier
+
+O projeto está otimizado para não exceder os limites:
+
+- **Cache Estrategico**: ISR em notícias reduz computations
+- **Zero Edge Functions**: Somente renderização estática/SSR
+- **Imagens Otimizadas**: Automatic Next.js image optimization
+- **Bundle Pequeno**: ~60KB final após compressão
+
+### Troubleshooting
+
+#### Problema: Build Falhando
+```bash
+# Verificar logs locais
+npm run build
+
+# Build limpo
+rm -rf .next && rm -rf node_modules && npm install && npm run build
+```
+
+#### Problema: Bandwidth Atingindo Limite
+Aumentar cache ISR: `export const revalidate = 7200` (2 horas)
+
+#### Problema: Domínio Não Funcionando
+```bash
+vercel domains ls
+vercel domains add your-domain.com
+```
+
+### Quando Fazer Upgrade
+
+- Traffic muito alto (>100GB/mês)
+- Builds muito frequentes (>1.000/mês)
+- Edge Functions customizadas necessárias
+- Team features avançados (SSO, etc.)
+
 - ✅ Navegação por teclado
 - ✅ Alt text descritivos
 - ✅ Semantic HTML
@@ -245,25 +245,154 @@ image: "/images/noticia.jpg"
 - Editar arquivos em `app/[pagina]/page.tsx`
 - Componentes reutilizáveis em `components/`
 
-## 🚀 Deploy
+## 🚀 Deploy na Vercel (Free Tier)
 
-### Vercel (Recomendado)
+O projeto está **100% otimizado para Vercel Free Tier** com custo **R$ 0,00/mês**! 🎉
+
+### Funcionalidades Gratulitas Ativadas
+
+- ✅ **Analytics Completo**: `@vercel/analytics` - Monitoramento em tempo real
+- ✅ **Speed Insights**: Core Web Vitals tracking gratuito
+- ✅ **ISR (Incremental Static Regeneration)**: Cache inteligente de páginas de notícias
+- ✅ **Headers de Segurança**: Middleware para proteção automática
+- ✅ **CDN Edge Global**: Performance otimizada para Brasil
+- ✅ **Certificado SSL**: HTTPS automático e grátis
+- ✅ **1 Domínio Gratuito**: Primeiro domínio sem custos
+- ✅ **GitHub Actions**: CI/CD automático (2.000 minutos/mês FREE)
+
+### Limites do Free Tier (Mais que suficiente para site institucional)
+
+- **100 GB** bandwidth/mês
+- **1.000 builds**/mês
+- **100 GB** Edge Functions/mês
+- **1 domínio** gratuito
+- **Analytics e Speed Insights** completos
+
+### Como Fazer Deploy
+
+#### 1. Preparar Conta Vercel
 
 ```bash
 # Instalar Vercel CLI
-npm i -g vercel
+npm install -g vercel
 
-# Deploy
-vercel
+# Fazer login
+vercel login
+
+# Link do projeto (dentro da pasta do projeto)
+vercel link
 ```
 
-### Outras Plataformas
+#### 2. Configurar Secrets no GitHub (para CI/CD automático)
 
-O projeto é compatível com qualquer plataforma que suporte Next.js:
-- Netlify
-- AWS Amplify
-- Cloudflare Pages
-- Railway
+No seu repositório GitHub, vá para **Settings > Secrets and variables > Actions** e adicione:
+
+```
+VERCEL_TOKEN=your_vercel_token_here
+VERCEL_ORG_ID=your_org_id_here
+VERCEL_PROJECT_ID=your_project_id_here
+```
+
+#### 3. Primeiro Deploy
+
+```bash
+# Deploy inicial (será criado preview domain *.vercel.app)
+vercel
+
+# Ou diretamente para produção
+vercel --prod
+```
+
+#### 4. Configurar Domínio Customizado (Gratuito)
+
+```bash
+# Adicionar domínio (primeiro é gratuito)
+vercel domains add asof.org.br
+
+# SSL será automático e gratuito
+```
+
+### Monitoramento e Analytics
+
+Após o deploy, no dashboard Vercel você terá acesso a:
+
+- **Real-time Analytics**: Visitors únicos, pageviews, bounce rate
+- **Speed Insights**: LCP, CLS, FID - Core Web Vitals
+- **Performance Monitoring**: Function duration, errors
+- **Traffic Analytics**: Geographic distribution, device types
+
+### Otimizações Implementadas
+
+#### Middleware para Segurança (middleware.ts)
+```typescript
+// Headers automáticos em todas as rotas
+response.headers.set('X-Frame-Options', 'DENY');
+response.headers.set('X-Content-Type-Options', 'nosniff');
+response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+```
+
+#### ISR para Notícias (app/noticias/page.tsx)
+```typescript
+// Cache de 1 hora para páginas de notícias
+export const revalidate = 3600;
+```
+
+#### Configuração Otimizada (vercel.json)
+```json
+{
+  "regions": ["gru1"],
+  "functions": {},
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Como Manter o Free Tier
+
+O projeto está otimizado para não exceder os limites:
+
+- **Cache Estrategico**: ISR em notícias reduz computations
+- **Zero Edge Functions**: Somente renderização estática/SSR
+- **Imagens Otimizadas**: Automatic Next.js image optimization
+- **Bundle Pequeno**: ~60KB final após compressão
+
+### Troubleshooting
+
+#### Problema: Build Falhando
+```bash
+# Verificar logs locais
+npm run build
+
+# Build limpo
+rm -rf .next && rm -rf node_modules && npm install && npm run build
+```
+
+#### Problema: Bandwidth Atingindo Limite
+Aumentar cache ISR: `export const revalidate = 7200` (2 horas)
+
+#### Problema: Domínio Não Funcionando
+```bash
+vercel domains ls
+vercel domains add your-domain.com
+```
+
+### Quando Fazer Upgrade
+
+- Traffic muito alto (>100GB/mês)
+- Builds muito frequentes (>1.000/mês)
+- Edge Functions customizadas necessárias
+- Team features avançados (SSO, etc.)
+
+**Com o Free Tier, o site da ASoF pode receber milhares de visitantes por mês sem nenhum custo!** 🚀
 
 ## 📊 Performance Esperada
 

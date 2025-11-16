@@ -4,6 +4,9 @@ import Section from '@/components/ui/Section';
 import NewsCard from '@/components/ui/NewsCard';
 import { getAllNews } from '@/lib/mdx';
 
+// ISR: Revalidate every hour (3600 seconds)
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: 'Notícias',
   description: 'Acompanhe as últimas notícias, eventos e conquistas da ASOF.',
