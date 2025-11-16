@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Handshake, Heart, GraduationCap, ShoppingBag, Plane, Utensils } from 'lucide-react';
+import { Handshake, Heart, GraduationCap, ShoppingBag, Plane } from 'lucide-react';
 import Container from '@/components/ui/Container';
 import Section from '@/components/ui/Section';
 import Card from '@/components/ui/Card';
