@@ -5,7 +5,7 @@
  * Execute com: npm run db:seed
  */
 
-import { PrismaClient, UserRole, UserStatus, ContentStatus, PageType, MediaType } from '@prisma/client'
+import { PrismaClient, UserRole, UserStatus, ContentStatus, PageType } from '@prisma/client'
 import * as bcrypt from 'bcrypt'
 
 const prisma = new PrismaClient()

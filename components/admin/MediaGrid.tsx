@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { MoreVertical, Download, Trash2, Eye, Copy, CheckCircle } from 'lucide-react'
+import { Download, Trash2, Eye, Copy, CheckCircle } from 'lucide-react'
 
 interface MediaItem {
   id: string
@@ -33,7 +33,6 @@ interface MediaGridProps {
 }
 
 export default function MediaGrid({ items, onDelete, onSelect }: MediaGridProps) {
-  const [selectedId, setSelectedId] = useState<string | null>(null)
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null)
 
   const handleCopyUrl = async (url: string, id: string) => {
