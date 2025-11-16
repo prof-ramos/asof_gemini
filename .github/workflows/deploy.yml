@@ -1,0 +1,220 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Check and lint code
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+  # Run E2E tests
+  test-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npm run test:install
+
+      - name: Run E2E tests (chromium only for CI speed)
+        run: npm run test:e2e:chromium
+        continue-on-error: false
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  # Build and deploy to Vercel
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [lint, test-e2e]
+    environment:
+      name: production
+      url: ${{ steps.deploy-preview.outputs.vercel-url || steps.deploy-production.outputs.vercel-url }}
+    outputs:
+      deployment-url: ${{ steps.deploy-preview.outputs.vercel-url || steps.deploy-production.outputs.vercel-url }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Set deployment environment
+        id: set-env
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" && "${{ github.event_name }}" == "push" ]]; then
+            echo "vercel_env=production" >> $GITHUB_OUTPUT
+          else
+            echo "vercel_env=preview" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build project
+        run: npm run build
+        env:
+          NEXT_PUBLIC_VERCEL_ENV: ${{ steps.set-env.outputs.vercel_env }}
+
+      - name: Deploy to Vercel (Preview)
+        if: github.event_name == 'pull_request'
+        id: deploy-preview
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./
+          vercel-args: '--yes'
+
+      - name: Deploy to Vercel (Production)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        id: deploy-production
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod --yes'
+
+      - name: Comment PR with Preview URL
+        if: github.event_name == 'pull_request'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            🚀 **Preview Deployment Ready!**
+
+            **Preview URL:** ${{ steps.deploy-preview.outputs.vercel-url }}
+
+            **Status:** ✅ Build successful
+            **Commit:** ${{ github.sha }}
+
+            ---
+            *This deployment will be available for 3 days*
+
+  # Performance monitoring
+  performance-check:
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npm run test:install
+
+      - name: Run Performance Tests
+        run: npm run test:performance
+        env:
+          DEPLOYMENT_URL: ${{ needs.deploy.outputs.deployment-url }}
+        continue-on-error: true
+
+      - name: Upload performance report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-report
+          path: test-results/
+          retention-days: 30
+
+  # Accessibility check
+  accessibility-check:
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npm run test:install
+
+      - name: Run Accessibility Tests
+        run: npm run test:a11y
+        env:
+          DEPLOYMENT_URL: ${{ needs.deploy.outputs.deployment-url }}
+        continue-on-error: true
+
+      - name: Upload accessibility report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: accessibility-report
+          path: test-results/
+          retention-days: 30
+
+  # Post-deployment notification
+  notify:
+    runs-on: ubuntu-latest
+    needs: [deploy, performance-check, accessibility-check]
+    if: always() && github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Notify deployment status
+        run: |
+          echo "🚀 Deployment completed!"
+          echo "Production URL: ${{ needs.deploy.outputs.deployment-url }}"
+          echo "Performance tests: ${{ needs.performance-check.result }}"
+          echo "Accessibility tests: ${{ needs.accessibility-check.result }}"
