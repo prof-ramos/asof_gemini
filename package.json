@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "analyze": "ANALYZE=true npm run build",
     "test:afterinstall": "npm run test:e2e",
     "test:e2e": "PLAYWRIGHT_TEST=true playwright test",
     "test:e2e:ui": "playwright test --ui",
@@ -34,11 +35,10 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "^5.22.0",
-    "prisma": "^5.22.0",
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@next/mdx": "^16.0.3",
+    "@prisma/client": "^5.22.0",
     "@radix-ui/react-slot": "^1.2.4",
     "@types/mdx": "^2.0.13",
     "@vercel/analytics": "^1.5.0",
@@ -48,6 +48,7 @@
     "lucide-react": "^0.553.0",
     "next": "^15.1.8",
     "next-mdx-remote": "^5.0.0",
+    "prisma": "^5.22.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "reading-time": "^1.5.0",
@@ -56,6 +57,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.0",
+    "@next/bundle-analyzer": "^16.0.3",
     "@playwright/test": "^1.49.0",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20",

@@ -8,6 +8,7 @@
  */
 
 import { PrismaClient } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 
 const prismaClientSingleton = () => {
   return new PrismaClient({
@@ -38,7 +39,7 @@ if (process.env.NODE_ENV !== 'production') {
  * Logs slow queries in development
  */
 if (process.env.NODE_ENV === 'development') {
-  prisma.$use(async (params, next) => {
+  prisma.$use(async (params: Prisma.MiddlewareParams, next) => {
     const before = Date.now()
     const result = await next(params)
     const after = Date.now()

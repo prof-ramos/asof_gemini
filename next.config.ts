@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next';
 import createMDX from '@next/mdx';
+import bundleAnalyzer from '@next/bundle-analyzer';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -57,8 +58,16 @@ const nextConfig: NextConfig = {
             value: 'nosniff'
           },
           {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()'
+          },
+          {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin'
+            value: 'strict-origin-when-cross-origin'
           }
         ],
       },
@@ -73,4 +82,8 @@ const withMDX = createMDX({
   },
 });
 
-export default withMDX(nextConfig);
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+export default withBundleAnalyzer(withMDX(nextConfig));
