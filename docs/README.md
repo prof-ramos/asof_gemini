@@ -25,6 +25,7 @@ Orientar LLMs na compreensão e implementação correta do projeto, prevenindo e
 
 ### 📄 Content & Data
 - **[MDX Integration](./llm-mdx-integration.md)** - Sistema de blog, frontmatter, reading time
+- **[Prisma ORM](./prisma-documentation.md)** - Database setup, schema, queries, migrations, best practices
 - **[API Patterns](./llm-api-patterns.md)** - Server actions, data fetching patterns
 
 ### 🧪 Testing & Quality
