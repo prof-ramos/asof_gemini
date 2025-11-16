@@ -1,3 +1,11 @@
+/**
+ * MDX Components Configuration
+ *
+ * This file must remain in the project root as per Next.js conventions.
+ * Next.js automatically discovers and uses this file for MDX component customization.
+ *
+ * @see https://nextjs.org/docs/app/building-your-application/configuring/mdx
+ */
 import type { MDXComponents } from 'mdx/types';
 import Image from 'next/image';
 import Link from 'next/link';

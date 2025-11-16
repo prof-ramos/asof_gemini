@@ -2,23 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import readingTime from 'reading-time';
+import type { NewsMetadata, NewsPost } from '@/types';
 
 const contentDirectory = path.join(process.cwd(), 'content/noticias');
-
-export interface NewsMetadata {
-  title: string;
-  date: string;
-  category: string;
-  excerpt: string;
-  author: string;
-  image: string;
-  slug: string;
-  readingTime?: string;
-}
-
-export interface NewsPost extends NewsMetadata {
-  content: string;
-}
 
 export const getAllNews = async (): Promise<NewsMetadata[]> => {
   try {
