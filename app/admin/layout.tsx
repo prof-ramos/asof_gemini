@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { Home, Image, FileText, Users, Settings } from 'lucide-react'
+import { Home, Image as ImageIcon, FileText, Users, Settings } from 'lucide-react'
 import AdminHeader from '@/components/admin/AdminHeader'
 
 export const metadata: Metadata = {
@@ -38,7 +38,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   href="/admin/media"
                   className="flex items-center gap-3 px-4 py-3 text-primary bg-accent/20 rounded-lg font-medium"
                 >
-                  <Image className="w-5 h-5" />
+                  <ImageIcon className="w-5 h-5" aria-label="Ícone de mídia" />
                   Mídia
                 </Link>
               </li>

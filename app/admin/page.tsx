@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { Image, FileText, Users, Settings, TrendingUp, Eye } from 'lucide-react'
+import { Image as ImageIcon, FileText, Users, Settings, TrendingUp, Eye } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Dashboard - Admin ASOF',
@@ -60,7 +60,7 @@ export default function AdminDashboard() {
               <p className="text-sm text-gray-500 mt-1">2.4 GB usado</p>
             </div>
             <div className="p-3 bg-purple-100 rounded-lg">
-              <Image className="w-6 h-6 text-purple-600" />
+              <ImageIcon className="w-6 h-6 text-purple-600" aria-hidden="true" />
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@ export default function AdminDashboard() {
           >
             <div className="flex items-center gap-4">
               <div className="p-3 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
-                <Image className="w-6 h-6 text-blue-600" />
+                <ImageIcon className="w-6 h-6 text-blue-600" aria-hidden="true" />
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900">Biblioteca de Mídia</h3>
@@ -161,7 +161,7 @@ export default function AdminDashboard() {
               <div className="flex-1">
                 <p className="text-sm text-gray-900">
                   <span className="font-medium">Admin</span> publicou uma nova notícia
-                  <span className="font-medium"> "ASOF celebra 50 anos"</span>
+                  <span className="font-medium"> &ldquo;ASOF celebra 50 anos&rdquo;</span>
                 </p>
                 <p className="text-xs text-gray-500 mt-1">Há 2 horas</p>
               </div>
@@ -171,7 +171,7 @@ export default function AdminDashboard() {
           <div className="p-4 hover:bg-gray-50 transition-colors">
             <div className="flex items-start gap-4">
               <div className="p-2 bg-blue-100 rounded">
-                <Image className="w-4 h-4 text-blue-600" />
+                <ImageIcon className="w-4 h-4 text-blue-600" aria-hidden="true" />
               </div>
               <div className="flex-1">
                 <p className="text-sm text-gray-900">
