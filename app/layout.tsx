@@ -16,7 +16,6 @@ export const metadata: Metadata = {
     'ASOF',
     'Oficiais de Chancelaria',
     'Itamaraty',
-    'Diplomacia Brasileira',
     'MRE',
     'Ministério das Relações Exteriores',
     'Serviço Exterior',
