@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { Handshake, Heart, GraduationCap, ShoppingBag, Plane } from 'lucide-react';
 import Container from '@/components/ui/Container';
 import Section from '@/components/ui/Section';
@@ -146,12 +147,12 @@ export default function ConveniosPage() {
               Para informações sobre convênios específicos, entre em contato conosco:
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="primary" asChild>
-                <a href="/contato">Entre em Contato</a>
-              </Button>
-              <Button variant="outline" asChild>
-                <a href="mailto:contato@asof.org.br">Enviar E-mail</a>
-              </Button>
+              <Link href="/contato">
+                <Button variant="primary">Entre em Contato</Button>
+              </Link>
+              <a href="mailto:contato@asof.org.br">
+                <Button variant="outline">Enviar E-mail</Button>
+              </a>
             </div>
           </Card>
         </Container>
