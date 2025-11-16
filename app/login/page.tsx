@@ -1,12 +1,11 @@
 'use client'
 
 import { useState, FormEvent, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { LogIn, AlertCircle } from 'lucide-react'
 
 function LoginForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') || '/admin'
 
@@ -34,11 +33,11 @@ function LoginForm() {
       }
 
       // Redirecionar após login bem-sucedido
-      router.push(redirect)
-      router.refresh()
+      // Usar window.location para garantir reload completo e aplicação do cookie
+      console.log('✅ Login bem-sucedido, redirecionando para:', redirect)
+      window.location.href = redirect
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Erro ao fazer login')
-    } finally {
       setLoading(false)
     }
   }
