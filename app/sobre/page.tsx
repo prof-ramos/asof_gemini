@@ -12,10 +12,16 @@ export const metadata: Metadata = {
 };
 
 const directors = [
-  { name: 'José Silva Santos', role: 'Presidente', image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop' },
-  { name: 'Maria Oliveira Costa', role: 'Vice-Presidente', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop' },
-  { name: 'Carlos Eduardo Lima', role: 'Tesoureiro', image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop' },
-  { name: 'Ana Paula Ferreira', role: 'Secretária-Geral', image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop' },
+  { name: 'Manuel Alves Bezerra', role: 'Presidente', image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop' },
+  { name: 'Cesar Dunstan Fleury Curado', role: 'Vice-Presidente', image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop' },
+  { name: 'Aline de Souza', role: 'Diretora-Executiva', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop' },
+  { name: 'Ariel Antonio Seleme', role: 'Diretor-Financeiro', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop' },
+];
+
+const fiscalCouncil = [
+  { name: 'Sérgio Gondim Simão', role: 'Presidente do Conselho Fiscal', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop' },
+  { name: 'Selma Teles da Silva', role: '1ª Vice-Presidente do Conselho', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop' },
+  { name: 'Célia Flores', role: '2ª Vice-Presidente do Conselho', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop' },
 ];
 
 const timeline = [
@@ -120,7 +126,7 @@ export default function SobrePage() {
         <Container>
           <div className="text-center mb-12">
             <h2 className="text-4xl font-serif font-bold text-primary mb-4">
-              Nossa Diretoria
+              Nossa Diretoria - Biênio 2025-2027
             </h2>
             <p className="text-lg text-primary-dark max-w-2xl mx-auto">
               Profissionais experientes comprometidos com a excelência na
@@ -128,25 +134,56 @@ export default function SobrePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {directors.map((director, idx) => (
-              <Card key={idx} className="text-center hover:shadow-xl transition-shadow">
-                <div className="relative w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden">
-                  <Image
-                    src={director.image}
-                    alt={`Foto de ${director.name}, ${director.role} da ASOF`}
-                    fill
-                    className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
-                  />
-                </div>
-                <h3 className="text-xl font-serif font-bold text-primary mb-2">
-                  {director.name}
-                </h3>
-                <p className="text-sm uppercase tracking-wider text-accent font-semibold">
-                  {director.role}
-                </p>
-              </Card>
-            ))}
+          <div className="mb-12">
+            <h3 className="text-2xl font-serif font-bold text-primary text-center mb-8">
+              Diretoria-Executiva
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {directors.map((director, idx) => (
+                <Card key={idx} className="text-center hover:shadow-xl transition-shadow">
+                  <div className="relative w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden">
+                    <Image
+                      src={director.image}
+                      alt={`Foto de ${director.name}, ${director.role} da ASOF`}
+                      fill
+                      className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                    />
+                  </div>
+                  <h3 className="text-xl font-serif font-bold text-primary mb-2">
+                    {director.name}
+                  </h3>
+                  <p className="text-sm uppercase tracking-wider text-accent font-semibold">
+                    {director.role}
+                  </p>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-2xl font-serif font-bold text-primary text-center mb-8">
+              Conselho Fiscal
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto">
+              {fiscalCouncil.map((member, idx) => (
+                <Card key={idx} className="text-center hover:shadow-xl transition-shadow">
+                  <div className="relative w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden">
+                    <Image
+                      src={member.image}
+                      alt={`Foto de ${member.name}, ${member.role} da ASOF`}
+                      fill
+                      className="object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                    />
+                  </div>
+                  <h3 className="text-xl font-serif font-bold text-primary mb-2">
+                    {member.name}
+                  </h3>
+                  <p className="text-sm uppercase tracking-wider text-accent font-semibold">
+                    {member.role}
+                  </p>
+                </Card>
+              ))}
+            </div>
           </div>
         </Container>
       </Section>
