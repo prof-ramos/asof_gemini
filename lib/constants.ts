@@ -1,4 +1,6 @@
-export const SITE_CONFIG = {
+import type { SiteConfig, NavItem } from '@/types';
+
+export const SITE_CONFIG: SiteConfig = {
   name: 'ASOF',
   fullName: 'Associação Nacional dos Oficiais de Chancelaria',
   description: 'Representamos os Oficiais de Chancelaria, pilar fundamental da estrutura e funcionamento do Ministério das Relações Exteriores do Brasil.',
@@ -18,7 +20,7 @@ export const SITE_CONFIG = {
   },
 };
 
-export const NAV_ITEMS = [
+export const NAV_ITEMS: NavItem[] = [
   { label: 'Sobre', href: '/sobre' },
   { label: 'Atuação', href: '/atuacao' },
   { label: 'Notícias', href: '/noticias' },

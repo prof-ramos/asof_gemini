@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Globe, Menu, X } from 'lucide-react';
-import { useScrollPosition } from '@/hooks/useScrollPosition';
+import { useScrollPosition } from '@/hooks';
 import { NAV_ITEMS, SITE_CONFIG } from '@/lib/constants';
 import Button from '@/components/ui/Button';
 import MobileMenu from './MobileMenu';
