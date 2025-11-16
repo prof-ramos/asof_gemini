@@ -59,7 +59,11 @@ if (process.env.NODE_ENV === 'development') {
 /**
  * Soft Delete Middleware
  * Automaticamente filtra registros deletados (soft delete)
+ *
+ * Nota: Este middleware está comentado por padrão para evitar conflitos.
+ * Descomente quando estiver pronto para usar soft deletes globalmente.
  */
+/*
 prisma.$use(async (params, next) => {
   // Para findMany, findFirst, findUnique - adiciona filtro de deletedAt
   if (params.action === 'findUnique' || params.action === 'findFirst') {
@@ -98,28 +102,4 @@ prisma.$use(async (params, next) => {
 
   return next(params)
 })
-
-/**
- * Helper function para hard delete (bypass soft delete middleware)
- */
-export async function hardDelete<T>(
-  model: keyof PrismaClient,
-  where: any
-): Promise<T> {
-  // @ts-ignore
-  return prisma[model].delete({ where })
-}
-
-/**
- * Helper function para restore soft deleted records
- */
-export async function restore<T>(
-  model: keyof PrismaClient,
-  where: any
-): Promise<T> {
-  // @ts-ignore
-  return prisma[model].update({
-    where,
-    data: { deletedAt: null }
-  })
-}
+*/

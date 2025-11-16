@@ -273,6 +273,29 @@ O projeto é compatível com qualquer plataforma que suporte Next.js:
 - **INP**: < 100ms
 - **Bundle JS**: ~60KB
 
+## 🗄️ CMS & Database (Futuro)
+
+O projeto conta com um **schema de banco de dados completo** para implementação futura de um painel de administração e CMS.
+
+### Status Atual
+- ✅ **Schema Prisma**: 20 modelos de dados documentados
+- ✅ **Documentação**: 16.500+ palavras em `/docs/`
+- ✅ **Docker Setup**: PostgreSQL + Redis + pgAdmin configurados
+- ⏳ **Implementação**: Pendente (MDX em uso atualmente)
+
+### Quando Usar
+O database está pronto para quando você quiser:
+- Implementar painel de administração
+- Migrar de MDX para CMS dinâmico
+- Adicionar gestão de usuários e permissões
+- Sistema avançado de mídia e documentos
+
+### Como Começar
+Veja o guia completo em `PRISMA_SETUP.md` ou a documentação em:
+- `DATABASE_DESIGN_SUMMARY.md` - Resumo do projeto
+- `docs/database-schema.md` - Schema completo
+- `docs/database-implementation.md` - Guia de implementação
+
 ## 🤝 Contribuindo
 
 Para contribuir com o projeto:

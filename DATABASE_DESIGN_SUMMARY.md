@@ -5,9 +5,11 @@
 Design completo de banco de dados para o sistema CMS/Admin do site ASOF.
 
 **Data**: 2024-11-16
-**Status**: ✅ Pronto para implementação
+**Status**: ✅ Pronto para implementação (schema e docs completos)
 **Database**: PostgreSQL 15+
 **ORM**: Prisma
+
+> **📌 NOTA IMPORTANTE**: As dependências do Prisma estão configuradas no `package.json` mas **não serão instaladas automaticamente** para não impactar o build atual do projeto. Quando estiver pronto para usar o banco de dados, execute `npm install` e siga o guia em `PRISMA_SETUP.md`.
 
 ---
 
