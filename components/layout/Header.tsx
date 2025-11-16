@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { useScrollPosition } from '@/hooks/useScrollPosition';
 import { NAV_ITEMS, SITE_CONFIG } from '@/lib/constants';
@@ -41,19 +40,15 @@ const Header = () => {
       <div className="container mx-auto px-6 flex justify-between items-center">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-4 group">
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src="https://asof.org.br/img/asof.svg"
             alt="ASOF Logo"
-            width={32}
-            height={32}
-            className={`w-8 h-8 transition-all duration-300 ${
+            width="32"
+            height="32"
+            className={`transition-all duration-300 ${
               isScrolled ? 'opacity-100' : 'opacity-90'
             }`}
-            unoptimized={true}
-            onError={() => {
-              // Fallback será implementado via estado se necessário
-              console.warn('Logo ASOF não carregada, implementando fallback...');
-            }}
           />
           <div>
             <h1
