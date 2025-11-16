@@ -1,0 +1,635 @@
+// ASOF CMS Database Schema
+// Prisma schema for comprehensive content management system
+// Version: 1.0.0
+// Database: PostgreSQL (recommended for production)
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum UserRole {
+  SUPER_ADMIN // Full system access
+  ADMIN       // Manage content and users
+  EDITOR      // Edit and publish content
+  AUTHOR      // Create and edit own content
+  VIEWER      // Read-only access
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING_VERIFICATION
+}
+
+enum ContentStatus {
+  DRAFT           // Work in progress
+  IN_REVIEW       // Submitted for review
+  SCHEDULED       // Scheduled for future publication
+  PUBLISHED       // Live on site
+  ARCHIVED        // Archived but accessible
+  DELETED         // Soft deleted
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  AUDIO
+  OTHER
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  PUBLISH
+  UNPUBLISH
+  LOGIN
+  LOGOUT
+  PERMISSION_CHANGE
+}
+
+enum PageType {
+  STATIC          // Static pages (Sobre, Contato)
+  DYNAMIC         // Dynamic content pages
+  LANDING         // Landing pages
+  CUSTOM          // Custom templates
+}
+
+// ============================================================================
+// USER MANAGEMENT
+// ============================================================================
+
+model User {
+  id            String     @id @default(cuid())
+  email         String     @unique
+  name          String
+  password      String     // Hashed with bcrypt
+  avatar        String?
+  bio           String?    @db.Text
+  role          UserRole   @default(AUTHOR)
+  status        UserStatus @default(PENDING_VERIFICATION)
+  emailVerified DateTime?
+
+  // Security
+  lastLoginAt      DateTime?
+  lastLoginIp      String?
+  failedLoginCount Int       @default(0)
+  lockedUntil      DateTime?
+  resetToken       String?   @unique
+  resetTokenExpiry DateTime?
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime? // Soft delete
+
+  // Relations
+  posts           Post[]
+  pages           Page[]
+  media           Media[]
+  comments        Comment[]
+  auditLogs       AuditLog[]
+  sessions        Session[]
+  createdCategories Category[] @relation("CategoryCreator")
+
+  @@index([email])
+  @@index([role])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("users")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  ipAddress    String?
+  userAgent    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sessionToken])
+  @@map("sessions")
+}
+
+// ============================================================================
+// CONTENT MANAGEMENT
+// ============================================================================
+
+model Post {
+  id       String        @id @default(cuid())
+  slug     String        @unique
+  title    String
+  excerpt  String?       @db.Text
+  content  String        @db.Text
+  status   ContentStatus @default(DRAFT)
+
+  // SEO & Metadata
+  metaTitle       String?
+  metaDescription String?  @db.Text
+  metaKeywords    String?
+  ogImage         String?
+
+  // Publishing
+  authorId        String
+  publishedAt     DateTime?
+  scheduledAt     DateTime?
+  featuredImageId String?
+  isFeatured      Boolean   @default(false)
+  viewCount       Int       @default(0)
+  readingTime     Int?      // in minutes
+
+  // Content organization
+  categoryId String?
+
+  // Timestamps
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete
+
+  // Relations
+  author         User      @relation(fields: [authorId], references: [id])
+  category       Category? @relation(fields: [categoryId], references: [id])
+  featuredImage  Media?    @relation("PostFeaturedImage", fields: [featuredImageId], references: [id])
+  tags           PostTag[]
+  comments       Comment[]
+  revisions      PostRevision[]
+  relatedPosts   PostRelation[] @relation("PostFrom")
+  relatedToPosts PostRelation[] @relation("PostTo")
+
+  @@index([slug])
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([isFeatured])
+  @@index([deletedAt])
+  @@fulltext([title, excerpt, content])
+  @@map("posts")
+}
+
+model PostRevision {
+  id        String   @id @default(cuid())
+  postId    String
+  title     String
+  excerpt   String?  @db.Text
+  content   String   @db.Text
+  version   Int
+  createdBy String
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@index([createdAt])
+  @@map("post_revisions")
+}
+
+model PostRelation {
+  id         String   @id @default(cuid())
+  fromPostId String
+  toPostId   String
+  createdAt  DateTime @default(now())
+
+  fromPost Post @relation("PostFrom", fields: [fromPostId], references: [id], onDelete: Cascade)
+  toPost   Post @relation("PostTo", fields: [toPostId], references: [id], onDelete: Cascade)
+
+  @@unique([fromPostId, toPostId])
+  @@index([fromPostId])
+  @@index([toPostId])
+  @@map("post_relations")
+}
+
+model Page {
+  id      String   @id @default(cuid())
+  slug    String   @unique
+  title   String
+  content String   @db.Text
+  type    PageType @default(STATIC)
+  status  ContentStatus @default(DRAFT)
+
+  // SEO & Metadata
+  metaTitle       String?
+  metaDescription String?  @db.Text
+  metaKeywords    String?
+  ogImage         String?
+
+  // Page configuration
+  template     String?  // Template identifier
+  parentId     String?  // For hierarchical pages
+  order        Int      @default(0)
+  showInNav    Boolean  @default(true)
+  isHomepage   Boolean  @default(false)
+
+  // Publishing
+  authorId     String
+  publishedAt  DateTime?
+
+  // Timestamps
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete
+
+  // Relations
+  author   User   @relation(fields: [authorId], references: [id])
+  parent   Page?  @relation("PageHierarchy", fields: [parentId], references: [id])
+  children Page[] @relation("PageHierarchy")
+
+  @@index([slug])
+  @@index([authorId])
+  @@index([status])
+  @@index([parentId])
+  @@index([deletedAt])
+  @@fulltext([title, content])
+  @@map("pages")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?  @db.Text
+  color       String?  // Hex color for UI
+  icon        String?  // Icon identifier
+  parentId    String?  // For hierarchical categories
+  order       Int      @default(0)
+  isVisible   Boolean  @default(true)
+
+  // Metadata
+  createdById String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime? // Soft delete
+
+  // Relations
+  createdBy User       @relation("CategoryCreator", fields: [createdById], references: [id])
+  parent    Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryHierarchy")
+  posts     Post[]
+
+  @@index([slug])
+  @@index([parentId])
+  @@index([deletedAt])
+  @@map("categories")
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  color     String?  // Hex color for UI
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete
+
+  posts PostTag[]
+
+  @@index([slug])
+  @@index([deletedAt])
+  @@map("tags")
+}
+
+model PostTag {
+  id        String   @id @default(cuid())
+  postId    String
+  tagId     String
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, tagId])
+  @@index([postId])
+  @@index([tagId])
+  @@map("post_tags")
+}
+
+// ============================================================================
+// MEDIA MANAGEMENT
+// ============================================================================
+
+model Media {
+  id          String    @id @default(cuid())
+  fileName    String
+  originalName String
+  mimeType    String
+  type        MediaType
+  size        Int       // in bytes
+  width       Int?      // for images/videos
+  height      Int?      // for images/videos
+  duration    Int?      // for videos/audio in seconds
+
+  // Storage
+  url         String
+  thumbnailUrl String?
+  path        String    // Storage path
+  bucket      String?   // S3 bucket or storage location
+
+  // Metadata
+  alt         String?
+  caption     String?   @db.Text
+  title       String?
+  description String?   @db.Text
+
+  // Organization
+  folderId    String?
+  uploaderId  String
+
+  // Timestamps
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete
+
+  // Relations
+  uploader       User    @relation(fields: [uploaderId], references: [id])
+  folder         MediaFolder? @relation(fields: [folderId], references: [id])
+  featuredInPosts Post[] @relation("PostFeaturedImage")
+
+  @@index([uploaderId])
+  @@index([type])
+  @@index([folderId])
+  @@index([deletedAt])
+  @@fulltext([fileName, alt, caption, title])
+  @@map("media")
+}
+
+model MediaFolder {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?  @db.Text
+  parentId    String?
+  order       Int      @default(0)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete
+
+  parent   MediaFolder?  @relation("FolderHierarchy", fields: [parentId], references: [id])
+  children MediaFolder[] @relation("FolderHierarchy")
+  media    Media[]
+
+  @@index([slug])
+  @@index([parentId])
+  @@index([deletedAt])
+  @@map("media_folders")
+}
+
+// ============================================================================
+// COMMENTS & ENGAGEMENT
+// ============================================================================
+
+model Comment {
+  id        String        @id @default(cuid())
+  content   String        @db.Text
+  status    ContentStatus @default(DRAFT)
+
+  // Author info (for public comments without user account)
+  authorName  String?
+  authorEmail String?
+  authorUrl   String?
+  authorIp    String?
+
+  // Relations
+  postId   String
+  userId   String?  // If logged-in user
+  parentId String?  // For nested replies
+
+  // Timestamps
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete
+
+  post     Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user     User?     @relation(fields: [userId], references: [id])
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentReplies")
+
+  @@index([postId])
+  @@index([userId])
+  @@index([parentId])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("comments")
+}
+
+// ============================================================================
+// TRANSPARENCY & DOCUMENTS
+// ============================================================================
+
+model Document {
+  id          String        @id @default(cuid())
+  title       String
+  description String?       @db.Text
+  fileName    String
+  fileUrl     String
+  fileSize    Int           // in bytes
+  mimeType    String
+  category    String        // e.g., "Financeiro", "Jurídico", "Atas"
+  year        Int?
+  month       Int?
+  status      ContentStatus @default(PUBLISHED)
+
+  // Visibility
+  isPublic    Boolean @default(true)
+  requiresAuth Boolean @default(false)
+
+  // Metadata
+  uploaderId  String
+  downloadCount Int @default(0)
+
+  // Timestamps
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete
+
+  uploader User @relation(fields: [uploaderId], references: [id])
+
+  @@index([uploaderId])
+  @@index([category])
+  @@index([year])
+  @@index([status])
+  @@index([deletedAt])
+  @@fulltext([title, description])
+  @@map("documents")
+}
+
+// Separate model for User relation in Document
+model User {
+  // ... (existing User fields)
+  documents Document[]
+}
+
+// ============================================================================
+// SYSTEM & CONFIGURATION
+// ============================================================================
+
+model Setting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String   @db.Text
+  type        String   // "string", "number", "boolean", "json"
+  category    String   // "general", "seo", "social", "email", etc.
+  description String?  @db.Text
+  isPublic    Boolean  @default(false) // Can be accessed on frontend
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+  @@index([category])
+  @@map("settings")
+}
+
+model AuditLog {
+  id          String      @id @default(cuid())
+  action      AuditAction
+  entityType  String      // "Post", "User", "Page", etc.
+  entityId    String
+  userId      String?
+  ipAddress   String?
+  userAgent   String?
+  changes     Json?       // Store before/after values
+  description String?     @db.Text
+
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([entityType])
+  @@index([entityId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model Navigation {
+  id       String  @id @default(cuid())
+  label    String
+  url      String
+  icon     String?
+  order    Int     @default(0)
+  parentId String?
+  isActive Boolean @default(true)
+  openInNewTab Boolean @default(false)
+
+  // Navigation location
+  location String @default("header") // "header", "footer", "sidebar"
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete
+
+  parent   Navigation?  @relation("NavigationHierarchy", fields: [parentId], references: [id])
+  children Navigation[] @relation("NavigationHierarchy")
+
+  @@index([parentId])
+  @@index([location])
+  @@index([order])
+  @@index([deletedAt])
+  @@map("navigations")
+}
+
+// ============================================================================
+// ANALYTICS & TRACKING
+// ============================================================================
+
+model PageView {
+  id         String   @id @default(cuid())
+  path       String
+  referer    String?
+  userAgent  String?
+  ipAddress  String?
+  country    String?
+  city       String?
+  device     String?
+  browser    String?
+  os         String?
+
+  sessionId  String?
+  userId     String?
+
+  createdAt  DateTime @default(now())
+
+  @@index([path])
+  @@index([createdAt])
+  @@index([sessionId])
+  @@index([userId])
+  @@map("page_views")
+}
+
+// ============================================================================
+// NEWSLETTER & SUBSCRIBERS
+// ============================================================================
+
+model Subscriber {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  status        String   @default("active") // "active", "unsubscribed", "bounced"
+  source        String?  // Where they subscribed from
+
+  // Preferences
+  preferences   Json?    // Newsletter preferences
+
+  // Verification
+  verifiedAt    DateTime?
+  verifyToken   String?  @unique
+
+  unsubscribedAt DateTime?
+  unsubscribeToken String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+  @@map("subscribers")
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String   @db.Text
+  status    String   @default("new") // "new", "read", "replied", "archived"
+
+  // Metadata
+  ipAddress String?
+  userAgent String?
+
+  // Response
+  repliedAt DateTime?
+  repliedBy String?
+  reply     String?  @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+  @@map("contact_messages")
+}

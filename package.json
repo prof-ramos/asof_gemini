@@ -19,7 +19,19 @@
     "test:a11y": "playwright test --grep='a11y'",
     "test:performance": "playwright test --grep='web-vitals'",
     "test:install": "playwright install --with-deps",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset",
+    "db:push": "prisma db push",
+    "db:pull": "prisma db pull",
+    "postinstall": "prisma generate"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
