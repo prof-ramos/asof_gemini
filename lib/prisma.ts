@@ -8,7 +8,6 @@
  */
 
 import { PrismaClient } from '@prisma/client'
-import type { Prisma } from '@prisma/client'
 
 const prismaClientSingleton = () => {
   return new PrismaClient({
@@ -37,7 +36,10 @@ if (process.env.NODE_ENV !== 'production') {
 /**
  * Query Performance Middleware
  * Logs slow queries in development
+ *
+ * Note: Commented out until Prisma Client is generated with a valid DATABASE_URL
  */
+/*
 if (process.env.NODE_ENV === 'development') {
   prisma.$use(async (params: Prisma.MiddlewareParams, next) => {
     const before = Date.now()
@@ -56,6 +58,7 @@ if (process.env.NODE_ENV === 'development') {
     return result
   })
 }
+*/
 
 /**
  * Soft Delete Middleware

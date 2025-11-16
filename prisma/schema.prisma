@@ -4,8 +4,7 @@
 // Database: PostgreSQL (recommended for production)
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -103,6 +102,7 @@ model User {
   auditLogs       AuditLog[]
   sessions        Session[]
   createdCategories Category[] @relation("CategoryCreator")
+  documents       Document[] @relation("DocumentUploader")
 
   @@index([email])
   @@index([role])
@@ -181,7 +181,6 @@ model Post {
   @@index([publishedAt])
   @@index([isFeatured])
   @@index([deletedAt])
-  @@fulltext([title, excerpt, content])
   @@map("posts")
 }
 
@@ -257,7 +256,6 @@ model Page {
   @@index([status])
   @@index([parentId])
   @@index([deletedAt])
-  @@fulltext([title, content])
   @@map("pages")
 }
 
@@ -367,7 +365,6 @@ model Media {
   @@index([type])
   @@index([folderId])
   @@index([deletedAt])
-  @@fulltext([fileName, alt, caption, title])
   @@map("media")
 }
 
@@ -461,21 +458,14 @@ model Document {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime? // Soft delete
 
-  uploader User @relation(fields: [uploaderId], references: [id])
+  uploader User @relation("DocumentUploader", fields: [uploaderId], references: [id])
 
   @@index([uploaderId])
   @@index([category])
   @@index([year])
   @@index([status])
   @@index([deletedAt])
-  @@fulltext([title, description])
   @@map("documents")
-}
-
-// Separate model for User relation in Document
-model User {
-  // ... (existing User fields)
-  documents Document[]
 }
 
 // ============================================================================
