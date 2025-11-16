@@ -20,17 +20,41 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
       aria-modal="true"
       aria-label="Menu de navegação mobile"
     >
-      <nav aria-label="Navegação mobile">
-        {NAV_ITEMS.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="text-primary py-2 border-b border-slate-100 text-lg font-serif block hover:text-accent transition-colors"
-            onClick={onClose}
-          >
-            {item.label}
-          </Link>
-        ))}
+      <nav aria-label="Navegação mobile" className="divide-y divide-slate-100">
+        {NAV_ITEMS.map((item) => {
+          if (item.children) {
+            return (
+              <div key={`group-${item.label}`} className="py-4">
+                <div className="text-primary text-sm uppercase tracking-widest font-medium mb-2">
+                  {item.label}
+                </div>
+                <div className="space-y-2 pl-4">
+                  {item.children.map((child) => (
+                    <Link
+                      key={child.href}
+                      href={child.href}
+                      className="text-primary-dark text-base font-serif block hover:text-accent transition-colors"
+                      onClick={onClose}
+                    >
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-primary py-4 border-t border-slate-100 text-lg font-serif block hover:text-accent transition-colors"
+              onClick={onClose}
+            >
+              {item.label}
+            </Link>
+          );
+        })}
       </nav>
       <Button variant="primary" className="w-full mt-4">
         Área do Associado

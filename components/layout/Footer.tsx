@@ -11,9 +11,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
           <div className="col-span-1 md:col-span-1">
-            <div className="flex items-center gap-2 text-white mb-6">
+            <div className="flex items-center gap-4 text-white mb-6">
               <Globe size={24} aria-hidden="true" />
-              <span className="font-serif text-xl font-bold">{SITE_CONFIG.name}</span>
+              <h2 className="font-serif text-xl font-bold">ASOF</h2>
             </div>
             <p className="text-sm leading-relaxed mb-6">
               {SITE_CONFIG.fullName}.
@@ -74,7 +74,7 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-serif font-bold mb-6">Contato</h4>
             <ul className="space-y-4 text-sm">
-              <li className="flex items-start gap-3">
+              <li className="flex items-start gap-4">
                 <MapPin size={18} className="mt-1 text-accent shrink-0" aria-hidden="true" />
                 <span>
                   {SITE_CONFIG.contact.address}
@@ -82,13 +82,13 @@ const Footer = () => {
                   {SITE_CONFIG.contact.city}
                 </span>
               </li>
-              <li className="flex items-center gap-3">
+              <li className="flex items-center gap-4">
                 <Phone size={18} className="text-accent shrink-0" aria-hidden="true" />
                 <a href={`tel:${SITE_CONFIG.contact.phone.replace(/\s/g, '')}`} className="hover:text-accent transition-colors">
                   {SITE_CONFIG.contact.phone}
                 </a>
               </li>
-              <li className="flex items-center gap-3">
+              <li className="flex items-center gap-4">
                 <Mail size={18} className="text-accent shrink-0" aria-hidden="true" />
                 <a href={`mailto:${SITE_CONFIG.contact.email}`} className="hover:text-accent transition-colors">
                   {SITE_CONFIG.contact.email}

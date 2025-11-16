@@ -160,7 +160,7 @@ export default function EventosPage() {
                       <h3 className="text-2xl font-serif font-bold text-primary">
                         {event.title}
                       </h3>
-                      <Badge variant="secondary">{event.category}</Badge>
+                      <Badge variant="default">{event.category}</Badge>
                     </div>
 
                     <p className="text-primary-dark mb-4 leading-relaxed">

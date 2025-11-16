@@ -4,6 +4,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   variant?: 'primary' | 'outline' | 'highlight' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   children: ReactNode;
+  asChild?: boolean;
 }
 
 export interface CardProps {

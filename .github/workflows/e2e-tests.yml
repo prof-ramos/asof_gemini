@@ -1,0 +1,200 @@
+name: E2E Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: E2E Tests - ${{ matrix.browser }}
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Instalar Playwright Browsers
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Build do projeto
+        run: npm run build
+
+      - name: Executar testes E2E
+        run: npx playwright test --project=${{ matrix.browser }}
+        env:
+          CI: true
+
+      - name: Upload de relatórios de teste
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: playwright-report/
+          retention-days: 7
+
+      - name: Upload de resultados de teste
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.browser }}
+          path: test-results/
+          retention-days: 7
+
+  test-mobile:
+    name: E2E Tests - Mobile
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Instalar Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build do projeto
+        run: npm run build
+
+      - name: Executar testes Mobile
+        run: npx playwright test --project=mobile-chrome --project=mobile-safari
+        env:
+          CI: true
+
+      - name: Upload de relatórios mobile
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-mobile
+          path: playwright-report/
+          retention-days: 7
+
+  accessibility:
+    name: Testes de Acessibilidade
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Instalar Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Build do projeto
+        run: npm run build
+
+      - name: Executar testes de acessibilidade
+        run: npx playwright test --project=accessibility
+        env:
+          CI: true
+
+      - name: Upload de relatórios A11y
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: accessibility-report
+          path: playwright-report/
+          retention-days: 30
+
+  performance:
+    name: Testes de Performance
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Instalar Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Build do projeto
+        run: npm run build
+
+      - name: Executar testes de performance
+        run: npx playwright test e2e/tests/performance/
+        env:
+          CI: true
+
+      - name: Upload de resultados de performance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report
+          path: test-results/
+          retention-days: 30
+
+  merge-reports:
+    name: Consolidar Relatórios
+    if: always()
+    needs: [test, test-mobile, accessibility, performance]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Baixar todos os relatórios
+        uses: actions/download-artifact@v4
+        with:
+          path: all-reports
+
+      - name: Listar relatórios
+        run: ls -R all-reports
+
+      - name: Upload relatório consolidado
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-test-reports
+          path: all-reports/
+          retention-days: 30

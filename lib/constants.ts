@@ -19,13 +19,25 @@ export const SITE_CONFIG = {
 };
 
 export const NAV_ITEMS = [
-  { label: 'Sobre', href: '/sobre' },
-  { label: 'Membros', href: '/membros' },
-  { label: 'Atuação', href: '/atuacao' },
-  { label: 'Notícias', href: '/noticias' },
-  { label: 'Revista', href: '/revista' },
+  {
+    label: 'Institucional',
+    href: '#',
+    children: [
+      { label: 'Sobre nós', href: '/sobre' },
+      { label: 'Membros', href: '/membros' },
+      { label: 'Atuação', href: '/atuacao' },
+    ],
+  },
+  {
+    label: 'Comunicação',
+    href: '#',
+    children: [
+      { label: 'Notícias', href: '/noticias' },
+      { label: 'Revista', href: '/revista' },
+      { label: 'Eventos', href: '/eventos' },
+    ],
+  },
   { label: 'Convênios', href: '/convenios' },
-  { label: 'Eventos', href: '/eventos' },
   { label: 'Transparência', href: '/transparencia' },
   { label: 'Contato', href: '/contato' },
 ];
