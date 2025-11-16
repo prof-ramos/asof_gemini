@@ -34,6 +34,8 @@ Orientar LLMs na compreensão e implementação correta do projeto, prevenindo e
 - **[Performance Testing](./llm-performance-testing.md)** - Web Vitals, Core Web Vitals
 
 ### 🚀 Deployment & Production
+- **[Deployment Guide](./deployment-guide.md)** - Guia completo de deploy na Vercel (PT-BR)
+- **[Quick Deploy](../DEPLOY.md)** - Checklist rápido de deploy em 5 minutos
 - **[Vercel Deployment](./llm-deployment-vercel.md)** - Build optimization, CDN, environment variables
 - **[CI/CD Pipeline](./llm-cicd-pipeline.md)** - GitHub Actions, automated testing
 
