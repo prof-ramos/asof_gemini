@@ -34,11 +34,11 @@ function LoginForm() {
       }
 
       // Redirecionar após login bem-sucedido
-      router.push(redirect)
-      router.refresh()
+      // Usar window.location para garantir reload completo e aplicação do cookie
+      console.log('✅ Login bem-sucedido, redirecionando para:', redirect)
+      window.location.href = redirect
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Erro ao fazer login')
-    } finally {
       setLoading(false)
     }
   }

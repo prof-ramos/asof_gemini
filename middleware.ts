@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { get } from '@vercel/edge-config'
+import prisma from '@/lib/prisma'
 
 // Rotas que requerem autenticação
 const PROTECTED_ROUTES = ['/admin']
@@ -30,12 +30,22 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  // Verificar se o token é válido via Edge Config
+  // Verificar se o token é válido no banco de dados
   try {
-    const validTokens = await get<string[]>('admin_tokens')
+    const session = await prisma.session.findUnique({
+      where: { sessionToken: authToken },
+      include: {
+        user: {
+          select: {
+            status: true,
+          },
+        },
+      },
+    })
 
-    if (!validTokens || !validTokens.includes(authToken)) {
-      // Token inválido, redirecionar para login
+    // Verificar se a sessão existe e é válida
+    if (!session) {
+      console.warn('⚠️  Session not found for token')
       const loginUrl = new URL(LOGIN_ROUTE, request.url)
       loginUrl.searchParams.set('redirect', pathname)
       const response = NextResponse.redirect(loginUrl)
@@ -43,15 +53,42 @@ export async function middleware(request: NextRequest) {
       return response
     }
 
-    // Token válido, permitir acesso
+    // Verificar se a sessão expirou
+    if (session.expires < new Date()) {
+      console.warn('⚠️  Session expired')
+      const loginUrl = new URL(LOGIN_ROUTE, request.url)
+      loginUrl.searchParams.set('redirect', pathname)
+      const response = NextResponse.redirect(loginUrl)
+      response.cookies.delete('admin-auth-token')
+
+      // Deletar sessão expirada
+      await prisma.session.delete({
+        where: { sessionToken: authToken },
+      })
+
+      return response
+    }
+
+    // Verificar se o usuário está ativo
+    if (session.user.status !== 'ACTIVE') {
+      console.warn('⚠️  User is not active')
+      const loginUrl = new URL(LOGIN_ROUTE, request.url)
+      loginUrl.searchParams.set('redirect', pathname)
+      const response = NextResponse.redirect(loginUrl)
+      response.cookies.delete('admin-auth-token')
+      return response
+    }
+
+    // Sessão válida, permitir acesso
+    console.log('✅ Valid session for user:', session.userId)
     return NextResponse.next()
   } catch (error) {
-    console.error('Error checking auth token:', error)
+    console.error('❌ Error checking auth token:', error)
 
-    // Em caso de erro (ex: Edge Config não configurado),
-    // permitir acesso em desenvolvimento
+    // Em caso de erro no database, redirecionar para login em produção
+    // Em desenvolvimento, permitir acesso para facilitar debug
     if (process.env.NODE_ENV === 'development') {
-      console.warn('⚠️  Edge Config not configured, allowing access in development mode')
+      console.warn('⚠️  Database error, allowing access in development mode')
       return NextResponse.next()
     }
 
