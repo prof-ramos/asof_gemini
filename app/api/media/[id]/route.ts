@@ -1,20 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { del } from '@vercel/blob'
-import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/prisma'
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 // GET - Buscar arquivo específico
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: RouteParams
 ) {
   try {
-    const { id } = params
+    const { id } = await params
 
     const media = await prisma.media.findUnique({
       where: { id },
@@ -66,7 +66,7 @@ export async function PATCH(
       )
     }
 
-    const { id } = params
+    const { id } = await params
     const body = await request.json()
 
     // Campos permitidos para atualização
@@ -140,7 +140,7 @@ export async function DELETE(
       )
     }
 
-    const { id } = params
+    const { id } = await params
 
     // Buscar arquivo
     const media = await prisma.media.findUnique({

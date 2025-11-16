@@ -7,21 +7,21 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/prisma'
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 // GET /api/posts/[slug]
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: RouteParams
 ) {
   try {
-    const { slug } = params
+    const { slug } = await params
 
     const post = await prisma.post.findUnique({
       where: {
@@ -137,7 +137,7 @@ export async function PUT(
   { params }: RouteParams
 ) {
   try {
-    const { slug } = params
+    const { slug } = await params
     const body = await request.json()
 
     // TODO: Adicionar autenticação
@@ -174,11 +174,11 @@ export async function PUT(
 
 // DELETE /api/posts/[slug] - Soft delete
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: RouteParams
 ) {
   try {
-    const { slug } = params
+    const { slug } = await params
 
     // TODO: Adicionar autenticação
     // const session = await getServerSession()

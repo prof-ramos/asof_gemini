@@ -8,7 +8,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/prisma'
 import { ContentStatus } from '@prisma/client'
 
 // GET /api/posts - Listar posts publicados
