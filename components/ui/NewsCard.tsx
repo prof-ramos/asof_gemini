@@ -22,7 +22,7 @@ const NewsCard = ({ date, category, title, image, slug, excerpt }: NewsCardProps
         </div>
         <time
           dateTime={date}
-          className="text-primary-dark text-xs font-bold uppercase tracking-widest mb-2 block"
+          className="text-primary-dark text-sm font-bold uppercase tracking-widest mb-2 block"
         >
           {formatDate(date)}
         </time>
@@ -30,7 +30,7 @@ const NewsCard = ({ date, category, title, image, slug, excerpt }: NewsCardProps
           {title}
         </h3>
         {excerpt && (
-          <p className="text-sm text-primary-dark line-clamp-2 mb-4">
+          <p className="text-base text-primary-dark line-clamp-2 mb-4">
             {excerpt}
           </p>
         )}

@@ -9,7 +9,7 @@ interface BadgeProps {
 const Badge = ({ children, className }: BadgeProps) => {
   return (
     <span className={cn(
-      "inline-block bg-white/90 backdrop-blur-sm px-3 py-1 text-xs font-bold tracking-wider uppercase text-primary rounded-sm",
+      "inline-block bg-white/90 backdrop-blur-sm px-3 py-1 text-sm font-bold tracking-wider uppercase text-primary rounded-sm",
       className
     )}>
       {children}

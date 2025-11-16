@@ -125,7 +125,7 @@ const Footer = () => {
 
         <div className="border-t border-primary-dark pt-8 flex flex-col md:flex-row justify-between items-center text-xs tracking-wide">
           <p>&copy; {currentYear} {SITE_CONFIG.name}. Todos os direitos reservados.</p>
-          <div className="flex gap-6 mt-4 md:mt-0">
+          <div className="flex gap-8 mt-4 md:mt-0">
             <Link href="/privacidade" className="hover:text-white transition-colors">
               Política de Privacidade
             </Link>

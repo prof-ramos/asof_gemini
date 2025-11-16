@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'outline' | 'highlight' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
   children: ReactNode;
 }
 

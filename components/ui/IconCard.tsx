@@ -13,7 +13,7 @@ const IconCard = ({ icon: Icon, title, description }: IconCardProps) => {
         <Icon className="text-primary-dark group-hover:text-white transition-colors" size={24} />
       </div>
       <h3 className="text-xl font-serif font-bold mb-4 text-primary">{title}</h3>
-      <p className="text-primary-dark leading-relaxed font-light">{description}</p>
+      <p className="text-primary-dark leading-relaxed font-light text-base">{description}</p>
     </div>
   );
 };

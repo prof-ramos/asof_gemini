@@ -40,7 +40,7 @@ const ContactForm = () => {
   return (
     <Card>
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <label htmlFor="name" className="block text-sm font-semibold text-primary mb-2">
               Nome Completo *
@@ -74,7 +74,7 @@ const ContactForm = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <label htmlFor="phone" className="block text-sm font-semibold text-primary mb-2">
               Telefone
