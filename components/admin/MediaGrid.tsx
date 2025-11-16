@@ -14,9 +14,15 @@ interface MediaItem {
   size: number
   width?: number
   height?: number
+  mimeType: string
+  alt?: string
+  caption?: string
+  title?: string
+  description?: string
   createdAt: string
   uploader: {
     name: string
+    email: string
   }
 }
 
