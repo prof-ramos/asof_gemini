@@ -1,17 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { get } from '@vercel/edge-config'
 import { createHash } from 'crypto'
+import bcrypt from 'bcryptjs'
+import prisma from '@/lib/prisma'
+import { UserStatus } from '@prisma/client'
 
 interface LoginRequest {
   email: string
   password: string
-}
-
-interface AdminUser {
-  email: string
-  passwordHash: string
-  name: string
-  role: string
 }
 
 export async function POST(request: NextRequest) {
@@ -26,39 +21,20 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Buscar usuários autorizados do Edge Config
-    let adminUsers: AdminUser[] = []
-
-    try {
-      const users = await get<AdminUser[]>('admin_users')
-      if (users) {
-        adminUsers = users
-      }
-    } catch (error) {
-      console.error('Error fetching admin users from Edge Config:', error)
-
-      // Fallback para desenvolvimento (remover em produção)
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('⚠️  Edge Config not configured, using development credentials')
-        adminUsers = [
-          {
-            email: 'admin@asof.org.br',
-            // Hash SHA-256 de 'admin123' (usar bcrypt em produção)
-            passwordHash: createHash('sha256').update('admin123').digest('hex'),
-            name: 'Administrador',
-            role: 'ADMIN',
-          },
-        ]
-      } else {
-        return NextResponse.json(
-          { error: 'Serviço de autenticação indisponível' },
-          { status: 503 }
-        )
-      }
-    }
-
-    // Buscar usuário por email
-    const user = adminUsers.find((u) => u.email === email)
+    // Buscar usuário no banco de dados Prisma
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        password: true,
+        role: true,
+        status: true,
+        failedLoginCount: true,
+        lockedUntil: true,
+      },
+    })
 
     if (!user) {
       return NextResponse.json(
@@ -67,30 +43,96 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validar senha (SHA-256 simples, considerar bcrypt em produção)
-    const passwordHash = createHash('sha256').update(password).digest('hex')
+    // Verificar se a conta está ativa
+    if (user.status !== UserStatus.ACTIVE) {
+      return NextResponse.json(
+        { error: 'Conta inativa ou suspensa. Entre em contato com o administrador.' },
+        { status: 403 }
+      )
+    }
 
-    if (passwordHash !== user.passwordHash) {
+    // Verificar se a conta está bloqueada
+    if (user.lockedUntil && user.lockedUntil > new Date()) {
+      return NextResponse.json(
+        { error: 'Conta temporariamente bloqueada. Tente novamente mais tarde.' },
+        { status: 403 }
+      )
+    }
+
+    // Validar senha com bcrypt
+    const isPasswordValid = await bcrypt.compare(password, user.password)
+
+    if (!isPasswordValid) {
+      // Incrementar contador de tentativas falhadas
+      const failedCount = user.failedLoginCount + 1
+      const shouldLock = failedCount >= 5
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          failedLoginCount: failedCount,
+          lockedUntil: shouldLock
+            ? new Date(Date.now() + 30 * 60 * 1000) // Bloquear por 30 minutos
+            : null,
+        },
+      })
+
       return NextResponse.json(
         { error: 'Email ou senha inválidos' },
         { status: 401 }
       )
     }
 
+    // Resetar contador de tentativas falhadas e atualizar último login
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        failedLoginCount: 0,
+        lockedUntil: null,
+        lastLoginAt: new Date(),
+        lastLoginIp: request.headers.get('x-forwarded-for') ||
+                     request.headers.get('x-real-ip') ||
+                     'unknown',
+      },
+    })
+
     // Gerar token de autenticação
     const authToken = createHash('sha256')
-      .update(`${user.email}:${Date.now()}:${process.env.AUTH_SECRET}`)
+      .update(`${user.email}:${Date.now()}:${process.env.NEXTAUTH_SECRET || 'fallback-secret'}`)
       .digest('hex')
 
-    // Armazenar token válido no Edge Config (ou em memória para desenvolvimento)
-    // Em produção, você deve adicionar o token ao Edge Config via API
-    // Por enquanto, vamos apenas criar o cookie com o token
+    // Criar sessão no banco de dados
+    const session = await prisma.session.create({
+      data: {
+        sessionToken: authToken,
+        userId: user.id,
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias
+        ipAddress: request.headers.get('x-forwarded-for') ||
+                   request.headers.get('x-real-ip') ||
+                   'unknown',
+        userAgent: request.headers.get('user-agent') || 'unknown',
+      },
+    })
+
+    // Registrar login no audit log
+    await prisma.auditLog.create({
+      data: {
+        action: 'LOGIN',
+        entityType: 'User',
+        entityId: user.id,
+        userId: user.id,
+        ipAddress: session.ipAddress,
+        userAgent: session.userAgent,
+        description: `Login bem-sucedido: ${user.email}`,
+      },
+    })
 
     // Criar resposta com cookie
     const response = NextResponse.json(
       {
         success: true,
         user: {
+          id: user.id,
           email: user.email,
           name: user.name,
           role: user.role,
@@ -108,17 +150,11 @@ export async function POST(request: NextRequest) {
       path: '/',
     })
 
-    // Em desenvolvimento, adicionar o token à lista de tokens válidos
-    // Em produção, isso deve ser feito via Edge Config API
-    if (process.env.NODE_ENV === 'development') {
-      // Armazenar em memória (não persistente, apenas para desenvolvimento)
-      console.log('✅ Login bem-sucedido:', user.email)
-      console.log('🔑 Auth Token:', authToken)
-    }
+    console.log('✅ Login bem-sucedido:', user.email, '- Role:', user.role)
 
     return response
   } catch (error) {
-    console.error('Error during login:', error)
+    console.error('❌ Erro durante login:', error)
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
