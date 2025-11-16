@@ -6,8 +6,8 @@ import Badge from './Badge';
 
 const NewsCard = ({ date, category, title, image, slug, excerpt }: NewsCardProps) => {
   return (
-    <article className="group cursor-pointer">
-      <Link href={`/noticias/${slug}`}>
+    <article className="group cursor-pointer h-full flex flex-col">
+      <Link href={`/noticias/${slug}`} className="h-full flex flex-col">
         <div className="overflow-hidden mb-4 relative aspect-[4/3] rounded-sm">
           <Image
             src={image}

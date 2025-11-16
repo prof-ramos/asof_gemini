@@ -36,11 +36,11 @@ const HeroSection = () => {
           Representamos os Oficiais de Chancelaria, pilar fundamental da estrutura
           e funcionamento do Ministério das Relações Exteriores do Brasil.
         </p>
-        <div className="flex flex-col md:flex-row gap-4 justify-center">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-6 justify-center">
           <Button variant="highlight">Junte-se à Associação</Button>
-          <button className="px-8 py-3 border border-white text-white hover:bg-white hover:text-primary transition-all duration-300 uppercase text-sm tracking-widest font-medium rounded-sm">
+          <Button variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
             Saiba Mais
-          </button>
+          </Button>
         </div>
       </Container>
 

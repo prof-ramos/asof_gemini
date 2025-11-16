@@ -45,7 +45,7 @@ export default function SobrePage() {
             <h1 className="text-5xl md:text-6xl font-serif font-bold mb-6">
               Nossa História
             </h1>
-            <p className="text-xl text-slate-200 leading-relaxed">
+            <p className="text-xl text-slate-200 leading-relaxed max-w-prose mx-auto">
               Desde 1992, a ASOF representa com excelência os Oficiais de Chancelaria,
               defendendo os direitos, promovendo a integração e valorizando a carreira
               que sustenta o Serviço Exterior Brasileiro.

@@ -10,6 +10,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 export interface CardProps {
   children: ReactNode;
   className?: string;
+  fullHeight?: boolean;
 }
 
 export interface NewsCardProps {

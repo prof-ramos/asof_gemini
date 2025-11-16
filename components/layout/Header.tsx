@@ -34,7 +34,7 @@ const Header = () => {
   return (
     <header
       className={`fixed w-full z-50 transition-all duration-500 ${
-        isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-4' : 'bg-white/10 backdrop-blur-sm py-6'
+        isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-4' : 'bg-primary/80 backdrop-blur-sm py-6'
       }`}
     >
       <div className="container mx-auto px-6 flex justify-between items-center">
@@ -59,7 +59,7 @@ const Header = () => {
               {SITE_CONFIG.name}
             </h1>
             <p
-              className={`text-[0.6rem] uppercase tracking-[0.2em] ${
+              className={`text-xs uppercase tracking-[0.2em] ${
                 isScrolled ? 'text-primary-dark' : 'text-slate-300'
               }`}
             >
@@ -87,7 +87,7 @@ const Header = () => {
                   >
                     {item.label}
                     <ChevronDown
-                      size={16}
+                      size={20}
                       className={`transition-transform ${openDropdown === item.label ? 'rotate-180' : ''}`}
                       aria-hidden="true"
                     />

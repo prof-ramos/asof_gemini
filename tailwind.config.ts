@@ -40,6 +40,9 @@ const config: Config = {
         '80px': '80px',
         '96px': '96px',
       },
+      maxWidth: {
+        'prose': '65ch', // 50-75 caracteres por linha (ideal para leitura)
+      },
       fontSize: {
         'xs': ['12px', { lineHeight: '1.2' }],
         'sm': ['14px', { lineHeight: '1.4' }],

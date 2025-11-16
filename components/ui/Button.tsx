@@ -1,6 +1,7 @@
 import { Slot } from '@radix-ui/react-slot';
 import { cn } from '@/lib/utils';
 import { ButtonProps } from '@/types';
+import { BUTTON_HEIGHTS } from '@/lib/design-tokens';
 
 const Button = ({
   children,
@@ -11,10 +12,13 @@ const Button = ({
   ...props
 }: ButtonProps) => {
   const Comp = asChild ? Slot : 'button';
+
+  // Alturas fixas para consistência (sem py- para evitar alturas irregulares)
+  // Mobile-first: garante 48px mínimo (atende iOS 44px e Android 48px)
   const sizes = {
-    sm: 'px-8 py-3 text-sm min-h-[48px]',
-    md: 'px-10 py-4 text-base min-h-[50px]',
-    lg: 'px-12 py-4 text-lg min-h-[52px]',
+    sm: `px-8 text-sm h-[${BUTTON_HEIGHTS.mobile.sm}]`,
+    md: `px-10 text-base h-[${BUTTON_HEIGHTS.mobile.md}]`,
+    lg: `px-12 text-lg h-[${BUTTON_HEIGHTS.mobile.lg}]`,
   };
 
   const baseStyle =

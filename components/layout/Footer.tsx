@@ -75,7 +75,7 @@ const Footer = () => {
             <h4 className="text-white font-serif font-bold mb-6">Contato</h4>
             <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-4">
-                <MapPin size={18} className="mt-1 text-accent shrink-0" aria-hidden="true" />
+                <MapPin size={20} className="mt-1 text-accent shrink-0" aria-hidden="true" />
                 <span>
                   {SITE_CONFIG.contact.address}
                   <br />
@@ -83,13 +83,13 @@ const Footer = () => {
                 </span>
               </li>
               <li className="flex items-center gap-4">
-                <Phone size={18} className="text-accent shrink-0" aria-hidden="true" />
+                <Phone size={20} className="text-accent shrink-0" aria-hidden="true" />
                 <a href={`tel:${SITE_CONFIG.contact.phone.replace(/\s/g, '')}`} className="hover:text-accent transition-colors">
                   {SITE_CONFIG.contact.phone}
                 </a>
               </li>
               <li className="flex items-center gap-4">
-                <Mail size={18} className="text-accent shrink-0" aria-hidden="true" />
+                <Mail size={20} className="text-accent shrink-0" aria-hidden="true" />
                 <a href={`mailto:${SITE_CONFIG.contact.email}`} className="hover:text-accent transition-colors">
                   {SITE_CONFIG.contact.email}
                 </a>

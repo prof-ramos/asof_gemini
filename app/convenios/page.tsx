@@ -56,10 +56,10 @@ export default function ConveniosPage() {
         <Container className="relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <Handshake className="mx-auto mb-6 text-accent" size={64} aria-hidden="true" />
-            <h1 className="text-5xl md:text-6xl font-serif font-bold mb-6">
+            <h1 className="text-5xl md:text-6xl font-serif font-bold mb-6 drop-shadow-lg">
               Convênios e Parcerias
             </h1>
-            <p className="text-xl text-slate-200 leading-relaxed">
+            <p className="text-xl text-white leading-relaxed drop-shadow-md">
               Aproveite descontos exclusivos e condições especiais em diversos
               estabelecimentos e serviços parceiros da ASOF.
             </p>
@@ -74,7 +74,7 @@ export default function ConveniosPage() {
             <h2 className="text-4xl font-serif font-bold text-primary mb-6">
               Categorias de Convênios
             </h2>
-            <p className="text-lg text-primary-dark max-w-2xl mx-auto">
+            <p className="text-lg text-slate-700 max-w-2xl mx-auto">
               Nossos convênios abrangem diversas áreas para atender às necessidades
               dos associados e suas famílias.
             </p>
@@ -91,7 +91,7 @@ export default function ConveniosPage() {
                     <h3 className="text-2xl font-serif font-bold text-primary mb-3">
                       {category.title}
                     </h3>
-                    <p className="text-primary-dark leading-relaxed">
+                    <p className="text-slate-700 leading-relaxed">
                       {category.description}
                     </p>
                   </div>
@@ -110,7 +110,7 @@ export default function ConveniosPage() {
               <h2 className="text-4xl font-serif font-bold text-primary mb-6">
                 Vantagens para Associados
               </h2>
-              <p className="text-lg text-primary-dark">
+              <p className="text-lg text-slate-700">
                 Os convênios da ASOF oferecem benefícios exclusivos para você e sua família.
               </p>
             </div>
@@ -121,7 +121,7 @@ export default function ConveniosPage() {
                   <div className="shrink-0 w-6 h-6 bg-accent rounded-full flex items-center justify-center mt-1">
                     <span className="text-white text-sm font-bold">✓</span>
                   </div>
-                  <p className="text-lg text-primary-dark">{benefit}</p>
+                  <p className="text-lg text-slate-700">{benefit}</p>
                 </div>
               ))}
             </div>
@@ -137,12 +137,12 @@ export default function ConveniosPage() {
             <h2 className="text-3xl font-serif font-bold text-primary mb-4">
               Convênios em Atualização
             </h2>
-            <p className="text-lg text-primary-dark mb-8 leading-relaxed">
+            <p className="text-lg text-slate-700 mb-8 leading-relaxed">
               Estamos trabalhando para trazer a você uma lista completa e atualizada
               de todos os nossos convênios e parcerias. Em breve, você poderá
               consultar todos os estabelecimentos participantes e seus benefícios.
             </p>
-            <p className="text-primary-dark mb-6">
+            <p className="text-slate-700 mb-6">
               Para informações sobre convênios específicos, entre em contato conosco:
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -164,7 +164,7 @@ export default function ConveniosPage() {
             <h2 className="text-4xl font-serif font-bold mb-6">
               Ainda Não é Associado?
             </h2>
-            <p className="text-xl text-slate-200 mb-8 leading-relaxed">
+            <p className="text-xl text-white mb-8 leading-relaxed drop-shadow-md">
               Associe-se à ASOF e tenha acesso a todos os nossos convênios e
               benefícios exclusivos. Valorize sua carreira e economize no dia a dia.
             </p>
