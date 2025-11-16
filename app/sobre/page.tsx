@@ -42,7 +42,7 @@ export default function SobrePage() {
             <p className="text-xl text-slate-200 leading-relaxed">
               Desde 1992, a ASOF representa com excelência os Oficiais de Chancelaria,
               defendendo os direitos, promovendo a integração e valorizando a carreira
-              que sustenta a diplomacia brasileira.
+              que sustenta o Serviço Exterior Brasileiro.
             </p>
           </div>
         </Container>

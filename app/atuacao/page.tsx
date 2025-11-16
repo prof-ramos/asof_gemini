@@ -24,7 +24,7 @@ const mainAreas = [
   },
   {
     icon: Shield,
-    title: 'Diplomacia Pública',
+    title: 'Promoção Cultural',
     description: 'Promoção da imagem do Brasil no exterior e interface entre o Itamaraty e a sociedade civil.',
   },
 ];

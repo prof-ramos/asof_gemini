@@ -30,7 +30,7 @@ const AboutSection = () => {
             <div className="relative">
               <Image
                 src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop"
-                alt="Escritório do Palácio do Itamaraty, representando a tradição e modernidade do serviço diplomático brasileiro"
+                alt="Escritório do Palácio do Itamaraty, representando a tradição e modernidade do Serviço Exterior Brasileiro"
                 width={800}
                 height={1000}
                 className="w-full aspect-[4/5] object-cover grayscale hover:grayscale-0 transition-all duration-700 rounded-sm shadow-2xl"
@@ -52,8 +52,8 @@ const AboutSection = () => {
             <p className="text-primary-dark mb-6 leading-relaxed font-light text-lg">
               A ASOF atua incansavelmente na valorização da carreira de Oficial de
               Chancelaria, garantindo que os profissionais tenham as condições
-              necessárias para desempenhar seu papel vital na diplomacia brasileira e
-              na assistência consular.
+              necessárias para desempenhar seu papel vital no Serviço Exterior Brasileiro
+              e na assistência consular.
             </p>
 
             <div className="grid grid-cols-1 gap-8 mt-10">

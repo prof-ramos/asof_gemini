@@ -10,7 +10,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 z-0">
         <Image
           src="https://images.unsplash.com/photo-1557127029-f9dc38d78e68?q=80&w=2070&auto=format&fit=crop"
-          alt="Arquitetura moderna do Palácio do Itamaraty em Brasília, símbolo da diplomacia brasileira"
+          alt="Arquitetura moderna do Palácio do Itamaraty em Brasília, sede do Ministério das Relações Exteriores"
           fill
           priority
           quality={85}
@@ -29,8 +29,8 @@ const HeroSection = () => {
           </span>
         </div>
         <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif font-medium mb-8 leading-tight animate-fade-in-up">
-          Excelência na <br />
-          <span className="italic text-accent">Diplomacia</span> e Gestão.
+          Excelência em <br />
+          <span className="italic text-accent">Gestão</span> e Serviço Consular.
         </h2>
         <p className="text-lg md:text-xl text-slate-100 max-w-2xl mx-auto mb-8 font-light leading-relaxed opacity-90">
           Representamos os Oficiais de Chancelaria, pilar fundamental da estrutura

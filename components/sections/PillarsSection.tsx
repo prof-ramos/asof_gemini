@@ -17,7 +17,7 @@ const PillarsSection = () => {
     },
     {
       icon: Shield,
-      title: 'Diplomacia Pública',
+      title: 'Promoção Cultural',
       text: 'Promoção da imagem do Brasil e interface com a sociedade civil.',
     },
   ];
