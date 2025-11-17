@@ -43,3 +43,6 @@ next-env.d.ts
 # prisma
 /prisma/migrations/*/migration.sql
 /node_modules/.prisma
+
+# security
+.gemini_security/

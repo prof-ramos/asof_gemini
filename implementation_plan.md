@@ -1,52 +1,121 @@
-# Implementation Plan
+# Complete News Management CMS Implementation Plan
 
-Implementar correções de UI/UX para alcançar conformidade rigorosa às regras de acessibilidade WCAG, consistência visual, tipografia, cores, espaçamentos e layouts no repositório asof_gemini.
-
-O projeto apresenta conformidade parcial, com áreas críticas como tipografia <16px em texto body e espaçamentos não padronizados à grade 8pt. A implementação priorizará acessibilidade (alto impacto) sobre refinamentos estéticos, utilizando o stack existente Next.js + Tailwind sem introduzir dependências desnecessárias.
+## Overview
+Implement a complete news management system for the ASOF CMS, integrating MDX-based content with a robust database-driven backend. The system will provide full CRUD operations for news articles, hybrid content serving, and a comprehensive admin interface while maintaining the existing MDX workflow for static content.
 
 ## Types
-Sem alterações em tipos existentes, porém introduzir tipagem para novos props (ex.: size para Button).
+Complete TypeScript definitions for the hybrid news management system, extending existing MDX types with Prisma database support.
 
-Detail type definitions: interface ButtonProps extends ... { size?: 'sm' | 'md' | 'lg'; };
-Color types em config: contrast-valid: 'valid' | 'invalid';
-Spacing types: multiples of 8: 4,8,12,16,24,32,40,48.
+Key interfaces to add:
+- `DatabasePost` - Prisma Post model mapped to application types
+- `HybridPost` - Union type for MDX and Database posts
+- `PostFormData` - Form validation types for creating/editing posts
+- `ApiResponse<T>` - Standardized API response format
+- `AdminListFilters` - Filter types for admin listings
 
 ## Files
-Novo arquivo: Nenhum arquivo totalmente novo necessário, focando em modificações.
+Project structure for complete news management implementation.
 
-Arquivos modificados:
-- tailwind.config.ts: Adicionar tokens design (cores, espaçamentos múltiplos de 8, escalas tipográficas).
-- components/ui/Button.tsx: Adicionar props size, ajustar padding para py-3, adicionar validação contraste.
-- components/ui/NewsCard.tsx: Mudar text-sm para text-base (≥16px).
-- components/ui/Badge.tsx: Mudar text-xs para text-sm.
-- components/ui/IconCard.tsx: Padronizar gap-2 para flex layouts.
-- Seções (newsabout.tsx et al): Substituir gap-6 por gap-8, padronizar margens.
+### New Files
+1. **Types** - `types/post.ts` - Database and hybrid type definitions
+2. **API Routes**:
+   - `app/api/posts/[id]/route.ts` - Individual post CRUD
+   - `app/api/posts/slug/[slug]/route.ts` - Slug-based post retrieval
+   - `app/api/posts/admin/route.ts` - Admin-specific post operations
+3. **Admin Interface**:
+   - `app/admin/posts/page.tsx` - Posts listing dashboard
+   - `app/admin/posts/new/page.tsx` - Create post form
+   - `app/admin/posts/[id]/edit/page.tsx` - Edit post form
+4. **Components**:
+   - `components/admin/posts/PostList.tsx` - Admin posts grid/table
+   - `components/admin/posts/PostForm.tsx` - Reusable post form
+   - `components/admin/posts/PostEditor.tsx` - Rich text editor
+   - `components/admin/posts/PostFilters.tsx` - Filter and search interface
+5. **Utilities**: `lib/posts.ts` - Hybrid MDX/Database post management
 
-Arquivos deletados: Nenhum.
+### Modified Files
+- `types/index.ts` - Extend with database types
+- `app/noticias/page.tsx` - Switch to hybrid post loading
+- `package.json` - Add required dependencies if needed
+- `prisma/schema.prisma` - Verify Post model completeness
 
-Configuração headless: Nenhum update necessário.
+### Deleted Files
+None planned.
 
 ## Functions
-Nova função: contrastChecker(color1, color2) return ratio for validation in build time.
-Função modificada: formatDate em utils.ts add parameter for font size if needed.
-Função removida: Nenhuma.
+API functions for complete post management with authentication.
+
+### New Functions
+- `getServerSession()` wrapper for consistent auth checks
+- `getHybridPosts()` - Load posts from both MDX and database sources
+- `createPost()` - Database post creation with validation
+- `updatePost()` - Post updates with audit trail
+- `deletePost()` - Soft delete functionality
+- `validatePostData()` - Form data validation
+
+### Modified Functions
+- `getAllNews()` in `lib/mdx.ts` - Extend to support hybrid loading
+- `prisma.post.create()` - Add full post lifecycle support
+
+### Removed Functions
+None planned.
 
 ## Classes
-Nova classe: Button com subclasses sm/md/lg for sizes.
-Classe modificada: Card com padding standardization.
-Classe removida: Nenhuma.
+Admin interface components for complete post management.
+
+### New Classes
+- `PostManagement` - Main posts management component
+- `PostEditor` - Rich text editor with image upload
+- `PostsDataGrid` - Sortable, filterable posts list
+- `PostFormValidator` - Client/server form validation
+
+### Modified Classes
+- NewsCard components may need post type detection
+
+### Removed Classes
+None planned.
 
 ## Dependencies
-Sem novas dependências; visualizar Existing tailwind/ Next.js.
+Required packages for full CMS functionality.
+
+New packages:
+- `@tiptap/react` (rich text editor)
+- `@tiptap/starter-kit` (editor essentials)
+- `zod` (schema validation)
+- `react-hook-form` (advanced forms)
+
+Existing packages sufficient for remaining functionality.
 
 ## Testing
-Manual check contrast ratios with browser dev tools.
-Test touch zones ~48-50px with mobile emulator.
-Validate typography legibility >16px.
+Comprehensive testing strategy for news management.
+
+### E2E Tests
+- Post CRUD operations via admin interface
+- Hybrid content serving (MDX vs Database)
+- Authentication integration testing
+- Media upload and association
+
+### Unit Tests
+- API functions with mocked database
+- Form validation logic
+- Type conversions and data mapping
+
+### Integration Tests
+- Full post creation workflow
+- Search and filtering functionality
+- Performance with large post volumes
 
 ## Implementation Order
-1. Configurar design tokens (cores, spacing, typography) em tailwind.config.ts.
-2. Atualizar Button.tsx com size props e min heights.
-3. Modificar NewsCard, Badge, IconCard para tipografia ≥16px e gaps padronizados.
-4. Ajustar seções variar gap-6 para gap-8.
-5. Testar e validar contrastes, faZER touch zones, alinhamentos.
+Logical sequence to minimize conflicts and ensure system stability.
+
+1. Types and data models definition
+2. API routes implementation with authentication
+3. Admin interface skeleton
+4. Post listing and filtering
+5. Rich text editor integration
+6. Image upload and association
+7. Form validation and error handling
+8. Hybrid content serving
+9. Search and advanced filtering
+10. Testing and optimization
+11. Migration strategy from MDX

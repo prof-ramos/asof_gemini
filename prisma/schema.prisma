@@ -1,14 +1,14 @@
 // ASOF CMS Database Schema
 // Prisma schema for comprehensive content management system
 // Version: 1.0.0
-// Database: PostgreSQL (recommended for production)
+// Database: SQLite (development) / PostgreSQL (production)
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -76,7 +76,7 @@ model User {
   name          String
   password      String     // Hashed with bcrypt
   avatar        String?
-  bio           String?    @db.Text
+  bio           String?    
   role          UserRole   @default(AUTHOR)
   status        UserStatus @default(PENDING_VERIFICATION)
   emailVerified DateTime?
@@ -137,13 +137,13 @@ model Post {
   id       String        @id @default(cuid())
   slug     String        @unique
   title    String
-  excerpt  String?       @db.Text
-  content  String        @db.Text
+  excerpt  String?       
+  content  String        
   status   ContentStatus @default(DRAFT)
 
   // SEO & Metadata
   metaTitle       String?
-  metaDescription String?  @db.Text
+  metaDescription String?  
   metaKeywords    String?
   ogImage         String?
 
@@ -188,8 +188,8 @@ model PostRevision {
   id        String   @id @default(cuid())
   postId    String
   title     String
-  excerpt   String?  @db.Text
-  content   String   @db.Text
+  excerpt   String?  
+  content   String   
   version   Int
   createdBy String
   createdAt DateTime @default(now())
@@ -220,13 +220,13 @@ model Page {
   id      String   @id @default(cuid())
   slug    String   @unique
   title   String
-  content String   @db.Text
+  content String   
   type    PageType @default(STATIC)
   status  ContentStatus @default(DRAFT)
 
   // SEO & Metadata
   metaTitle       String?
-  metaDescription String?  @db.Text
+  metaDescription String?  
   metaKeywords    String?
   ogImage         String?
 
@@ -263,7 +263,7 @@ model Category {
   id          String   @id @default(cuid())
   name        String   @unique
   slug        String   @unique
-  description String?  @db.Text
+  description String?  
   color       String?  // Hex color for UI
   icon        String?  // Icon identifier
   parentId    String?  // For hierarchical categories
@@ -343,9 +343,9 @@ model Media {
 
   // Metadata
   alt         String?
-  caption     String?   @db.Text
+  caption     String?   
   title       String?
-  description String?   @db.Text
+  description String?   
 
   // Organization
   folderId    String?
@@ -372,7 +372,7 @@ model MediaFolder {
   id          String   @id @default(cuid())
   name        String
   slug        String   @unique
-  description String?  @db.Text
+  description String?  
   parentId    String?
   order       Int      @default(0)
 
@@ -396,7 +396,7 @@ model MediaFolder {
 
 model Comment {
   id        String        @id @default(cuid())
-  content   String        @db.Text
+  content   String        
   status    ContentStatus @default(DRAFT)
 
   // Author info (for public comments without user account)
@@ -435,7 +435,7 @@ model Comment {
 model Document {
   id          String        @id @default(cuid())
   title       String
-  description String?       @db.Text
+  description String?       
   fileName    String
   fileUrl     String
   fileSize    Int           // in bytes
@@ -475,10 +475,10 @@ model Document {
 model Setting {
   id          String   @id @default(cuid())
   key         String   @unique
-  value       String   @db.Text
+  value       String   
   type        String   // "string", "number", "boolean", "json"
   category    String   // "general", "seo", "social", "email", etc.
-  description String?  @db.Text
+  description String?  
   isPublic    Boolean  @default(false) // Can be accessed on frontend
 
   createdAt DateTime @default(now())
@@ -498,7 +498,7 @@ model AuditLog {
   ipAddress   String?
   userAgent   String?
   changes     Json?       // Store before/after values
-  description String?     @db.Text
+  description String?     
 
   createdAt DateTime @default(now())
 
@@ -603,7 +603,7 @@ model ContactMessage {
   email     String
   phone     String?
   subject   String
-  message   String   @db.Text
+  message   String   
   status    String   @default("new") // "new", "read", "replied", "archived"
 
   // Metadata
@@ -613,7 +613,7 @@ model ContactMessage {
   // Response
   repliedAt DateTime?
   repliedBy String?
-  reply     String?  @db.Text
+  reply     String?  
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
