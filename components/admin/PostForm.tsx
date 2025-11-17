@@ -113,8 +113,14 @@ export default function PostForm({ mode, post, categories, tags }: PostFormProps
       const submitData = {
         ...formData,
         status: newStatus || formData.status,
-        featuredImageId: formData.featuredImageId || undefined,
-        categoryId: formData.categoryId || undefined,
+        featuredImageId:
+          formData.featuredImageId === ''
+            ? null
+            : formData.featuredImageId || undefined,
+        categoryId:
+          formData.categoryId === ''
+            ? null
+            : formData.categoryId || undefined,
         publishedAt:
           formData.publishedAt || newStatus === 'PUBLISHED'
             ? formData.publishedAt || new Date().toISOString()

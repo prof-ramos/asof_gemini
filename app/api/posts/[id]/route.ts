@@ -22,15 +22,21 @@ interface RouteParams {
   }>
 }
 
-// GET /api/posts/[id] - Buscar post por ID
+// GET /api/posts/[id] - Buscar post por ID (protegido - apenas autenticado)
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: RouteParams
 ) {
   try {
     const { id } = await params
 
-    const post = await prisma.post.findUnique({
+    // Verificar autenticação (admin apenas)
+    const authResult = await requireAuth(request)
+    if ('error' in authResult) {
+      return authResult.error
+    }
+
+    const post = await prisma.post.findFirst({
       where: {
         id,
         deletedAt: null,
@@ -125,8 +131,11 @@ export async function PUT(
     const { session } = authResult
 
     // Buscar post existente
-    const existingPost = await prisma.post.findUnique({
-      where: { id, deletedAt: null },
+    const existingPost = await prisma.post.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
     })
 
     if (!existingPost) {
@@ -302,8 +311,11 @@ export async function DELETE(
     }
 
     // Buscar post
-    const post = await prisma.post.findUnique({
-      where: { id, deletedAt: null },
+    const post = await prisma.post.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
     })
 
     if (!post) {

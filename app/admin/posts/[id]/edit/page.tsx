@@ -20,7 +20,7 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
 
   // Buscar post, categorias e tags
   const [post, categories, tags] = await Promise.all([
-    prisma.post.findUnique({
+    prisma.post.findFirst({
       where: {
         id,
         deletedAt: null,

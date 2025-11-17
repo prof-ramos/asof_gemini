@@ -182,9 +182,14 @@ export interface PostsListResponse {
   };
 }
 
+export interface PostDetailData {
+  post: Post;
+  relatedPosts: PostListItem[];
+}
+
 export interface PostDetailResponse {
   success: boolean;
-  data: Post;
+  data: PostDetailData;
 }
 
 export interface PostErrorResponse {

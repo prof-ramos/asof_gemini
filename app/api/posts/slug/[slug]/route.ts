@@ -24,10 +24,11 @@ export async function GET(
   try {
     const { slug } = await params
 
-    const post = await prisma.post.findUnique({
+    const post = await prisma.post.findFirst({
       where: {
         slug,
         deletedAt: null,
+        status: ContentStatus.PUBLISHED,
       },
       include: {
         author: {
@@ -77,19 +78,7 @@ export async function GET(
       return NextResponse.json(
         {
           success: false,
-          error: 'Post não encontrado',
-        },
-        { status: 404 }
-      )
-    }
-
-    // Apenas posts publicados são retornados por este endpoint público
-    // (posts em rascunho ou revisão só via endpoint autenticado)
-    if (post.status !== ContentStatus.PUBLISHED) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Post não está publicado',
+          error: 'Post não encontrado ou não está publicado',
         },
         { status: 404 }
       )

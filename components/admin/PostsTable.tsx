@@ -215,6 +215,7 @@ export default function PostsTable({ posts }: PostsTableProps) {
                       <Edit className="w-4 h-4" />
                     </Link>
                     <button
+                      type="button"
                       onClick={() => handleDelete(post.id)}
                       disabled={deletingId === post.id}
                       className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
