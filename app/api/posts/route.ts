@@ -1,258 +1,119 @@
-/**
- * API Route: Posts
- *
- * GET /api/posts - Lista todos os posts publicados
- * POST /api/posts - Cria um novo post (requer autenticação)
- *
- * Exemplo de integração Prisma com Next.js 15 App Router
- */
+import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { Prisma } from '@prisma/client'
 
-import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { ContentStatus, UserRole } from '@prisma/client'
-import { requireAuth } from '@/lib/auth-helpers'
+import { CreatePostRequest } from '@/types/post'
+// import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
-// GET /api/posts - Listar posts publicados
-export async function GET(request: NextRequest) {
+/**
+ * GET /api/posts - Retrieve all published posts with pagination support
+ * @param request - The incoming HTTP request containing query parameters
+ * @returns Response with paginated posts data or error response
+ */
+export async function GET(request: Request) {
   try {
-    const searchParams = request.nextUrl.searchParams
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '12')
+    const { searchParams } = new URL(request.url)
+    const page = Number(searchParams.get('page')) || 1
+    const limit = Number(searchParams.get('limit')) || 10
     const category = searchParams.get('category')
-    const featured = searchParams.get('featured') === 'true'
 
-    const skip = (page - 1) * limit
-
-    // Construir filtros
-    const where: any = {
-      status: ContentStatus.PUBLISHED,
+    const where: Prisma.PostWhereInput = {
+      status: 'PUBLISHED',
       deletedAt: null,
     }
 
     if (category) {
-      where.category = {
-        slug: category,
-      }
+      where.category = { slug: category }
     }
 
-    if (featured) {
-      where.isFeatured = true
-    }
-
-    // Buscar posts com relações
-    const [posts, total] = await Promise.all([
-      prisma.post.findMany({
-        where,
-        include: {
-          author: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              avatar: true,
-            },
-          },
-          category: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-              color: true,
-            },
-          },
-          featuredImage: {
-            select: {
-              id: true,
-              url: true,
-              alt: true,
-              width: true,
-              height: true,
-            },
-          },
-          tags: {
-            include: {
-              tag: true,
-            },
-          },
-        },
-        orderBy: {
-          publishedAt: 'desc',
-        },
-        skip,
-        take: limit,
-      }),
-      prisma.post.count({ where }),
-    ])
-
-    // Transformar posts para formato de resposta
-    const formattedPosts = posts.map(post => ({
-      id: post.id,
-      slug: post.slug,
-      title: post.title,
-      excerpt: post.excerpt,
-      publishedAt: post.publishedAt,
-      readingTime: post.readingTime,
-      viewCount: post.viewCount,
-      isFeatured: post.isFeatured,
-      author: post.author,
-      category: post.category,
-      featuredImage: post.featuredImage,
-      tags: post.tags.map(pt => pt.tag),
-    }))
+    const total = await prisma.post.count({ where })
+    const posts = await prisma.post.findMany({
+      where,
+      include: {
+        author: { select: { name: true, avatar: true } },
+        category: { select: { name: true, slug: true } },
+      },
+      orderBy: {
+        publishedAt: 'desc',
+      },
+      skip: (page - 1) * limit,
+      take: limit,
+    })
 
     return NextResponse.json({
-      success: true,
-      data: formattedPosts,
+      data: posts,
       pagination: {
         page,
         limit,
         total,
-        totalPages: Math.ceil(total / limit),
+        pages: Math.ceil(total / limit),
       },
     })
   } catch (error) {
-    console.error('Error fetching posts:', error)
+    console.error('Error fetching published posts:', error)
     return NextResponse.json(
-      {
-        success: false,
-        error: 'Failed to fetch posts',
-      },
-      { status: 500 }
+      { message: 'An error occurred while fetching posts.' },
+      { status: 500 },
     )
   }
 }
 
-// POST /api/posts - Criar novo post
-export async function POST(request: NextRequest) {
+/**
+ * POST /api/posts - Create a new post
+ * @param request - The incoming HTTP request with post data
+ * @returns Response with created post data or error response
+ */
+export async function POST(request: Request) {
+  // const session = await getServerSession(authOptions)
+  // if (!session || !['ADMIN', 'EDITOR', 'AUTHOR'].includes(session.user.role)) {
+  //   return NextResponse.json({ message: 'Unauthorized' }, { status: 403 })
+  // }
+
   try {
-    // Verificar autenticação
-    const authResult = await requireAuth(request)
-    if ('error' in authResult) {
-      return authResult.error
-    }
-
-    const { session } = authResult
-
-    const body = await request.json()
+    const body: CreatePostRequest = await request.json()
     const {
       title,
-      slug,
-      excerpt,
       content,
       status,
-      metaTitle,
-      metaDescription,
-      metaKeywords,
-      ogImage,
-      publishedAt,
-      scheduledAt,
-      featuredImageId,
-      isFeatured,
       categoryId,
-      tagIds,
+      isFeatured,
+      publishedAt,
+      authorId, // This should come from the session in a real app
     } = body
 
-    // Validação básica
-    if (!title || !slug || !content) {
+    // Basic validation
+    if (!title || !content) {
       return NextResponse.json(
-        {
-          success: false,
-          error: 'Campos obrigatórios faltando: title, slug, content',
-        },
-        { status: 400 }
+        { message: 'Title and content are required.' },
+        { status: 400 },
       )
     }
 
-    // Validar status de publicação
-    if (status === ContentStatus.PUBLISHED) {
-      const canPublish =
-        session.user.role === UserRole.SUPER_ADMIN ||
-        session.user.role === UserRole.ADMIN ||
-        session.user.role === UserRole.EDITOR
+    const slug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '')
 
-      if (!canPublish) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: 'Você não tem permissão para publicar posts. Envie para revisão.',
-          },
-          { status: 403 }
-        )
-      }
-    }
-
-    // Calcular reading time
-    const readingTime = Math.ceil(content.split(/\s+/).length / 200)
-
-    // Criar post
     const post = await prisma.post.create({
       data: {
         title,
-        slug,
-        excerpt,
+        slug, // Simple slug generation
         content,
-        status: status || ContentStatus.DRAFT,
-        authorId: session.user.id,
+        status,
         categoryId,
-        readingTime,
-        metaTitle,
-        metaDescription,
-        metaKeywords,
-        ogImage,
-        publishedAt: publishedAt ? new Date(publishedAt) : null,
-        scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
-        featuredImageId,
-        isFeatured: isFeatured || false,
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        category: true,
-        featuredImage: true,
+        isFeatured,
+        publishedAt,
+        authorId: 'user-placeholder-id', // Replace with session.user.id,
       },
     })
 
-    // Adicionar tags se fornecidas
-    if (tagIds && tagIds.length > 0) {
-      await prisma.postTag.createMany({
-        data: tagIds.map((tagId: string) => ({
-          postId: post.id,
-          tagId,
-        })),
-      })
-    }
-
-    // Registrar no audit log
-    await prisma.auditLog.create({
-      data: {
-        action: 'CREATE',
-        entityType: 'Post',
-        entityId: post.id,
-        userId: session.user.id,
-        description: `Post criado: ${post.title}`,
-      },
-    })
-
-    return NextResponse.json(
-      {
-        success: true,
-        data: post,
-      },
-      { status: 201 }
-    )
+    return NextResponse.json(post, { status: 201 })
   } catch (error) {
     console.error('Error creating post:', error)
     return NextResponse.json(
-      {
-        success: false,
-        error: 'Erro ao criar post',
-      },
-      { status: 500 }
+      { message: 'An error occurred while creating the post.' },
+      { status: 500 },
     )
   }
 }

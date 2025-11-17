@@ -1,0 +1,109 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "ASOF Logo ASOF Oficiais de Chancelaria" [ref=e4]:
+        - /url: /
+        - img "ASOF Logo" [ref=e5]
+        - generic [ref=e6]:
+          - heading "ASOF" [level=1] [ref=e7]
+          - paragraph [ref=e8]: Oficiais de Chancelaria
+      - button "Abrir menu" [ref=e9] [cursor=pointer]:
+        - img [ref=e10]
+  - main [ref=e11]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - img [ref=e16]
+        - heading "ASOF Admin" [level=1] [ref=e19]
+        - paragraph [ref=e20]: Acesse o painel administrativo
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - generic [ref=e24]: Email
+            - textbox "Email" [active] [ref=e25]:
+              - /placeholder: seu@email.com
+          - generic [ref=e26]:
+            - generic [ref=e27]: Senha
+            - textbox "Senha" [ref=e28]:
+              - /placeholder: ••••••••
+              - text: senhaerrada
+          - button "Entrar" [ref=e29] [cursor=pointer]:
+            - img [ref=e30]
+            - text: Entrar
+        - paragraph [ref=e34]:
+          - text: Esqueceu sua senha?
+          - link "Entre em contato" [ref=e35]:
+            - /url: mailto:admin@asof.org.br
+      - link "← Voltar ao site" [ref=e37]:
+        - /url: /
+  - contentinfo [ref=e38]:
+    - generic [ref=e39]:
+      - generic [ref=e40]:
+        - generic [ref=e41]:
+          - generic [ref=e42]:
+            - img [ref=e43]
+            - heading "ASOF" [level=2] [ref=e46]
+          - paragraph [ref=e47]: Associação Nacional dos Oficiais de Chancelaria.
+          - generic [ref=e48]:
+            - link "Instagram" [ref=e49] [cursor=pointer]:
+              - /url: "#"
+              - text: IG
+            - link "Twitter" [ref=e50] [cursor=pointer]:
+              - /url: "#"
+              - text: TW
+            - link "LinkedIn" [ref=e51] [cursor=pointer]:
+              - /url: "#"
+              - text: LI
+        - generic [ref=e52]:
+          - heading "Links Rápidos" [level=4] [ref=e53]
+          - list [ref=e54]:
+            - listitem [ref=e55]:
+              - link "Sobre a ASOF" [ref=e56]:
+                - /url: /sobre
+            - listitem [ref=e57]:
+              - link "Estatuto Social" [ref=e58]:
+                - /url: /sobre#estatuto
+            - listitem [ref=e59]:
+              - link "Portal da Transparência" [ref=e60]:
+                - /url: /transparencia
+            - listitem [ref=e61]:
+              - link "Clube de Benefícios" [ref=e62]:
+                - /url: /atuacao#beneficios
+        - generic [ref=e63]:
+          - heading "Contato" [level=4] [ref=e64]
+          - list [ref=e65]:
+            - listitem [ref=e66]:
+              - img [ref=e67]
+              - generic [ref=e70]:
+                - text: Setor de Autarquias Sul, Quadra 5
+                - text: Brasília - DF, Brasil
+            - listitem [ref=e71]:
+              - img [ref=e72]
+              - link "+55 (61) 3322-0000" [ref=e74]:
+                - /url: tel:+55(61)3322-0000
+            - listitem [ref=e75]:
+              - img [ref=e76]
+              - link "contato@asof.org.br" [ref=e79]:
+                - /url: mailto:contato@asof.org.br
+        - generic [ref=e80]:
+          - heading "Informativo" [level=4] [ref=e81]
+          - paragraph [ref=e82]: Receba as principais notícias da carreira no seu e-mail.
+          - generic [ref=e83]:
+            - generic [ref=e84]: Seu e-mail
+            - textbox "Inscrever-se na newsletter" [ref=e85]:
+              - /placeholder: Seu e-mail
+            - generic "Enviar" [ref=e86] [cursor=pointer]:
+              - img [ref=e87]
+      - generic [ref=e89]:
+        - paragraph [ref=e90]: © 2025 ASOF. Todos os direitos reservados.
+        - generic [ref=e91]:
+          - link "Política de Privacidade" [ref=e92]:
+            - /url: /privacidade
+          - link "Termos de Uso" [ref=e93]:
+            - /url: /termos
+  - button "Open Next.js Dev Tools" [ref=e99] [cursor=pointer]:
+    - img [ref=e100]
+  - alert [ref=e105]
+```

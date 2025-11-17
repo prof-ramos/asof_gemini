@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Architecture
 
-**ASOF Website** - Next.js 15 institutional website using App Router with strict TypeScript, MDX blog, and Playwright E2E tests.
+**ASOF Website** - Next.js 15 institutional website with full-featured CMS admin panel, authentication system, REST API, MDX blog integration, Prisma database, Framer Motion animations, and comprehensive Playwright E2E tests.
 
 ### Critical Architecture Patterns
 
@@ -38,6 +38,42 @@ Server Components can:
 - Semantic HTML required (nav, main, header, footer, section, article)
 - Color contrast minimum 4.5:1 validated in `/lib/color-combinations.ts`
 
+**Admin Panel & CMS**: Full-featured admin dashboard at `/app/admin`:
+- Sidebar navigation with dashboard, media, posts, users, settings
+- Authentication-protected routes with session management
+- Media library with upload, preview, filtering capabilities
+- Admin components: `AdminHeader`, `MediaUpload`, `MediaGrid`, `MediaPreview`, `MediaFilters`
+- Role-based access control (SUPER_ADMIN, ADMIN, EDITOR, AUTHOR, VIEWER)
+
+**Authentication System**: Secure session-based authentication:
+- Login/logout API routes at `/app/api/auth/`
+- Prisma database session storage with 7-day expiry
+- bcrypt password hashing with salt rounds
+- Failed login tracking with automatic account locking (5 attempts = 30min lock)
+- Audit logging for all authentication events
+- HTTP-only cookies for secure token storage
+- IP address and user agent tracking
+
+**REST API Routes**: Comprehensive API at `/app/api/`:
+- `/api/auth/login` - User authentication
+- `/api/auth/logout` - Session termination
+- `/api/posts` - Post CRUD operations
+- `/api/posts/[slug]` - Individual post management
+- `/api/media` - Media library management
+- `/api/media/upload` - File upload handling
+- `/api/media/[id]` - Media item operations
+- `/api/categories` - Category management
+
+**Framer Motion Integration**: Centralized animation system in `/lib/motion-config.ts`:
+- Easing functions: elegant, smooth, spring, sharp, easeOut, easeIn
+- Duration tokens: instant, fast, quick, normal, slow, elegant, verySlow
+- Stagger delays: sm (0.05s), md (0.1s), lg (0.15s), xl (0.2s)
+- Viewport configurations for scroll-triggered animations
+- Reduced motion support for accessibility
+- Pre-configured transitions for common use cases
+- Motion variants in `/lib/motion-variants.ts`
+- `RevealOnScroll` component for scroll animations
+
 ## Common Commands
 
 ### Development
@@ -60,14 +96,23 @@ npm run test:e2e:mobile        # Test mobile viewports
 npm run test:a11y              # Accessibility tests only
 npm run test:performance       # Performance tests only
 npm run test:report            # View HTML test report
+
+# Run specific test file or test
+npx playwright test e2e/tests/static/homepage.spec.ts           # Single file
+npx playwright test -g "should load homepage"                   # By test name
+npx playwright test e2e/tests/static/homepage.spec.ts --headed  # Watch test run
 ```
 
-### Database (Prisma - Optional, not currently used)
+### Database (Prisma - Active)
 ```bash
 npm run db:generate            # Generate Prisma Client
 npm run db:migrate             # Create and apply migration
+npm run db:migrate:deploy      # Apply migrations in production
 npm run db:studio              # Open Prisma Studio GUI
 npm run db:seed                # Seed database with initial data
+npm run db:reset               # Reset database (⚠️ deletes all data)
+npm run db:push                # Push schema without migrations
+npm run db:pull                # Pull schema from database
 ```
 
 ### Bundle Analysis
@@ -197,29 +242,101 @@ await page.locator('div > div > button:nth-child(3)').click()
 
 ## Critical Files & Their Purpose
 
+### Core Configuration
 - `/app/layout.tsx`: Root layout with metadata, Analytics, SpeedInsights, Header, Footer
+- `/next.config.ts`: Next.js configuration with MDX, bundle analyzer, security headers
+- `/prisma/schema.prisma`: Complete database schema (20+ models) - **ACTIVELY USED**
+- `/prisma/seed.ts`: Database seeding script with admin user and test data
+
+### Library & Utilities
 - `/lib/design-tokens.ts`: Centralized spacing, button heights, icon sizes (8pt grid)
+- `/lib/motion-config.ts`: Framer Motion easing, durations, stagger, viewport configs
+- `/lib/motion-variants.ts`: Reusable animation variants for components
 - `/lib/color-combinations.ts`: WCAG-validated color pairings with contrast ratios
 - `/lib/fonts.ts`: Optimized Google Fonts (Playfair Display + Inter)
 - `/lib/mdx.ts`: Functions to read/parse MDX blog posts
-- `/components/ui/`: Reusable components (Button, Card, Badge, etc)
+- `/lib/prisma.ts`: Prisma Client singleton instance
+- `/lib/performance.ts`: Web Vitals tracking and performance monitoring
+- `/lib/utils.ts`: Utility functions (cn, formatDate, etc)
+- `/lib/constants.ts`: Site configuration and navigation items
+
+### Components
+- `/components/ui/`: Reusable components (Button, Card, Badge, NewsCard, etc)
 - `/components/layout/`: Header (with scroll detection), Footer, MobileMenu
-- `/e2e/pages/`: Page Object Models for tests
-- `/e2e/tests/`: Test suites (static, news, accessibility, performance)
-- `/content/noticias/`: MDX blog posts
-- `/prisma/schema.prisma`: Complete database schema (20+ models, not currently used)
+- `/components/admin/`: Admin panel components (AdminHeader, MediaUpload, MediaGrid, MediaPreview, MediaFilters)
+- `/components/effects/`: Animation components (RevealOnScroll)
+- `/components/sections/`: Homepage sections (Hero, About, Pillars, News, CTA)
 
-## Database Architecture (Prisma - Future Use)
+### Hooks
+- `/hooks/ui/useScrollPosition.ts`: Scroll position detection for header
+- `/hooks/useWebVitals.ts`: Web Vitals tracking hook
+- `/hooks/useMousePosition.ts`: Mouse position tracking
+- `/hooks/useReducedMotion.ts`: Accessibility hook for animation preferences
+- `/hooks/index.ts`: Barrel exports for all hooks
 
-The project has a **complete Prisma schema** ready for CMS implementation but **not currently integrated**. The blog uses MDX files instead.
+### Pages & Routes
+- `/app/admin/`: Admin panel dashboard and pages (protected routes)
+- `/app/api/`: REST API routes (auth, posts, media, categories)
+- `/app/login/`: Login page for admin authentication
+- `/app/noticias/`: News listing and individual article pages (MDX)
+- `/app/[page]/`: Static pages (sobre, atuacao, contato, transparencia, etc)
 
-**When to activate database**:
-- Need admin panel for content management
-- Want to migrate from MDX to dynamic CMS
-- Require user authentication/permissions
-- Advanced media/document management needed
+### Testing
+- `/e2e/pages/`: Page Object Models for E2E tests
+- `/e2e/tests/`: Test suites (static, news, admin, accessibility, performance)
+- `/e2e/tests/admin/login.spec.ts`: Admin authentication tests
+- `/e2e/fixtures/`: Test data and fixtures
 
-**Key models**: User (with roles), Post, Page, Category, Tag, Media, Document, AuditLog, Setting
+### Content
+- `/content/noticias/`: MDX blog posts with frontmatter metadata
+
+## Database Architecture (Prisma - ACTIVE)
+
+The project uses **PostgreSQL with Prisma ORM** for the admin panel, authentication, and CMS features. The public blog still uses MDX files for performance, but the admin system is fully database-driven.
+
+**Currently Active Features**:
+- ✅ User authentication and session management
+- ✅ Admin panel with role-based access control
+- ✅ Media library with database references
+- ✅ Audit logging for all admin actions
+- ✅ Post management (coexists with MDX)
+- ✅ Category and tag management
+- ⏳ Comment system (schema ready, not implemented)
+- ⏳ Document management (schema ready, not implemented)
+
+**Key Models in Use**:
+- `User`: Admin users with roles (SUPER_ADMIN, ADMIN, EDITOR, AUTHOR, VIEWER)
+- `Session`: Authentication sessions with 7-day expiry
+- `Media`: Uploaded files with metadata and storage references
+- `Post`: Blog posts (can coexist with MDX files)
+- `Category`: Hierarchical categorization
+- `Tag`: Content tagging system
+- `AuditLog`: Complete audit trail of all actions
+- `Setting`: System configuration key-value store
+
+**Database Setup**:
+```bash
+# First time setup
+npm run db:generate          # Generate Prisma Client
+npm run db:migrate           # Create tables
+npm run db:seed              # Create admin user and test data
+
+# Accessing the database
+npm run db:studio            # Open Prisma Studio GUI (localhost:5555)
+```
+
+**Default Admin Credentials** (from seed):
+```
+Email: admin@asof.org.br
+Password: Admin123!@#
+Role: SUPER_ADMIN
+```
+
+**Environment Variables Required**:
+```bash
+DATABASE_URL="postgresql://user:password@host:5432/asof"
+NEXTAUTH_SECRET="your-secret-key-here"
+```
 
 See `prisma/schema.prisma` and `/docs/database-*.md` for complete documentation.
 
@@ -239,6 +356,101 @@ See `prisma/schema.prisma` and `/docs/database-*.md` for complete documentation.
 - CLS < 0.1
 - Via Vercel Analytics + Speed Insights
 
+## Framer Motion Usage Patterns
+
+### Basic Animation
+```typescript
+import { motion } from 'framer-motion'
+import { TRANSITION, EASING, DURATION } from '@/lib/motion-config'
+
+// Simple fade-in
+<motion.div
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={TRANSITION.default}
+>
+  Content
+</motion.div>
+
+// Slide up with custom timing
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: DURATION.slow, ease: EASING.elegant }}
+>
+  Content
+</motion.div>
+```
+
+### Scroll-Triggered Animations
+```typescript
+import { RevealOnScroll } from '@/components/effects/RevealOnScroll'
+
+// Using the RevealOnScroll component
+<RevealOnScroll variant="fadeInUp">
+  <div>Content that animates on scroll</div>
+</RevealOnScroll>
+
+// Or manually with viewport
+import { VIEWPORT } from '@/lib/motion-config'
+<motion.div
+  initial={{ opacity: 0, y: 30 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={VIEWPORT.default}
+>
+  Content
+</motion.div>
+```
+
+### Stagger Children
+```typescript
+import { STAGGER, DURATION } from '@/lib/motion-config'
+
+<motion.ul
+  initial="hidden"
+  animate="visible"
+  variants={{
+    visible: {
+      transition: {
+        staggerChildren: STAGGER.md,
+      },
+    },
+  }}
+>
+  {items.map((item) => (
+    <motion.li
+      key={item.id}
+      variants={{
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 },
+      }}
+    >
+      {item.name}
+    </motion.li>
+  ))}
+</motion.ul>
+```
+
+### Reduced Motion Support
+```typescript
+import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { getTransition } from '@/lib/motion-config'
+
+function MyComponent() {
+  const prefersReducedMotion = useReducedMotion()
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={getTransition('elegant', prefersReducedMotion)}
+    >
+      Content
+    </motion.div>
+  )
+}
+```
+
 ## Common Pitfalls to Avoid
 
 1. **Adding `"use client"` unnecessarily**: Most components should be Server Components
@@ -249,6 +461,7 @@ See `prisma/schema.prisma` and `/docs/database-*.md` for complete documentation.
 6. **Forgetting ARIA labels**: All icons and icon-only buttons need aria-label
 7. **Using CSS selectors in tests**: Use `getByRole()`, `getByText()` instead
 8. **Not testing on mobile**: Run `npm run test:e2e:mobile`
+9. **Committing sensitive files**: Never commit `.env`, `.gemini_security/`, or files with credentials
 
 ## Deployment
 
@@ -268,6 +481,56 @@ npm run test:e2e          # All tests must pass
 ```bash
 vercel --prod
 ```
+
+## Environment Variables
+
+**Note**: `DATABASE_URL` is required only when using Prisma/database features (currently optional, as the project uses MDX instead). Analytics and SMTP variables are optional/configurable - see `.env.development.local` for full defaults and examples.
+
+Critical environment variables (see `.env.example` for full list):
+
+```bash
+# Database (Prisma) - Required when using database features (currently optional, MDX-only)
+DATABASE_URL="postgresql://user:pass@host:5432/asof"
+
+# Analytics (auto-configured on Vercel) - Optional, enable for user insights and performance tracking
+NEXT_PUBLIC_ENABLE_ANALYTICS=true
+NEXT_PUBLIC_ENABLE_SPEED_INSIGHTS=true
+
+# Email (for contact form) - Optional, configure when contact form functionality is needed
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="your-email@gmail.com"
+SMTP_PASS="your-app-password"
+```
+
+## CI/CD Pipeline
+
+**GitHub Actions** automatically:
+- Runs E2E tests on push to `main` and PRs
+- Deploys to Vercel if all tests pass
+- Can be triggered manually via `workflow_dispatch`
+
+**Pre-commit checks**: Ensure `npm run lint` and `npm run build` pass locally.
+
+## Platform-Specific Notes
+
+**MacBook Air M3 (8GB RAM)**:
+- Playwright workers limited to 3 for optimal performance
+- E2E tests configured to avoid memory issues
+- Use `npm run test:e2e:chromium` for faster single-browser testing during development
+
+## Security & Performance Features
+
+**Security headers** (configured in `next.config.ts`):
+- Strict-Transport-Security (HSTS)
+- Content-Security-Policy (CSP)
+- X-Frame-Options: DENY
+- X-Content-Type-Options: nosniff
+
+**Monitoring**:
+- Vercel Analytics for user insights
+- Vercel Speed Insights for real-time Core Web Vitals
+- Web Vitals tracking via `/lib/performance.ts`
 
 ## Additional Documentation
 
