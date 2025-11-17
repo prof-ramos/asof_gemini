@@ -321,7 +321,6 @@ Dúvidas? Entre em contato: eventos@asof.org.br`,
       { postId: post3.id, tagId: tags[3].id }, // associacao
       { postId: post3.id, tagId: tags[1].id }, // carreira
     ],
-    skipDuplicates: true,
   })
 
   console.log('✅ Posts criados:', [post1.title, post2.title, post3.title])
