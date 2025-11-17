@@ -1,0 +1,113 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "ASOF Logo ASOF Oficiais de Chancelaria" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "ASOF Logo" [ref=e5]
+        - generic [ref=e6]:
+          - heading "ASOF" [level=1] [ref=e7]
+          - paragraph [ref=e8]: Oficiais de Chancelaria
+      - button "Abrir menu" [ref=e9] [cursor=pointer]:
+        - img [ref=e10]
+  - main [ref=e11]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - img [ref=e16]
+        - heading "ASOF Admin" [level=1] [ref=e19]
+        - paragraph [ref=e20]: Acesse o painel administrativo
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - img [ref=e24]
+            - paragraph [ref=e26]: Email ou senha inválidos
+          - generic [ref=e27]:
+            - generic [ref=e28]: Email
+            - textbox "Email" [ref=e29]:
+              - /placeholder: seu@email.com
+              - text: teste@exemplo.com
+          - generic [ref=e30]:
+            - generic [ref=e31]: Senha
+            - textbox "Senha" [ref=e32]:
+              - /placeholder: ••••••••
+              - text: senhaerrada
+          - button "Entrar" [ref=e33] [cursor=pointer]:
+            - img [ref=e34]
+            - text: Entrar
+        - paragraph [ref=e38]:
+          - text: Esqueceu sua senha?
+          - link "Entre em contato" [ref=e39] [cursor=pointer]:
+            - /url: mailto:admin@asof.org.br
+      - link "← Voltar ao site" [ref=e41] [cursor=pointer]:
+        - /url: /
+  - contentinfo [ref=e42]:
+    - generic [ref=e43]:
+      - generic [ref=e44]:
+        - generic [ref=e45]:
+          - generic [ref=e46]:
+            - img [ref=e47]
+            - heading "ASOF" [level=2] [ref=e50]
+          - paragraph [ref=e51]: Associação Nacional dos Oficiais de Chancelaria.
+          - generic [ref=e52]:
+            - link "Instagram" [ref=e53] [cursor=pointer]:
+              - /url: "#"
+              - text: IG
+            - link "Twitter" [ref=e54] [cursor=pointer]:
+              - /url: "#"
+              - text: TW
+            - link "LinkedIn" [ref=e55] [cursor=pointer]:
+              - /url: "#"
+              - text: LI
+        - generic [ref=e56]:
+          - heading "Links Rápidos" [level=4] [ref=e57]
+          - list [ref=e58]:
+            - listitem [ref=e59]:
+              - link "Sobre a ASOF" [ref=e60] [cursor=pointer]:
+                - /url: /sobre
+            - listitem [ref=e61]:
+              - link "Estatuto Social" [ref=e62] [cursor=pointer]:
+                - /url: /sobre#estatuto
+            - listitem [ref=e63]:
+              - link "Portal da Transparência" [ref=e64] [cursor=pointer]:
+                - /url: /transparencia
+            - listitem [ref=e65]:
+              - link "Clube de Benefícios" [ref=e66] [cursor=pointer]:
+                - /url: /atuacao#beneficios
+        - generic [ref=e67]:
+          - heading "Contato" [level=4] [ref=e68]
+          - list [ref=e69]:
+            - listitem [ref=e70]:
+              - img [ref=e71]
+              - generic [ref=e74]:
+                - text: Setor de Autarquias Sul, Quadra 5
+                - text: Brasília - DF, Brasil
+            - listitem [ref=e75]:
+              - img [ref=e76]
+              - link "+55 (61) 3322-0000" [ref=e78] [cursor=pointer]:
+                - /url: tel:+55(61)3322-0000
+            - listitem [ref=e79]:
+              - img [ref=e80]
+              - link "contato@asof.org.br" [ref=e83] [cursor=pointer]:
+                - /url: mailto:contato@asof.org.br
+        - generic [ref=e84]:
+          - heading "Informativo" [level=4] [ref=e85]
+          - paragraph [ref=e86]: Receba as principais notícias da carreira no seu e-mail.
+          - generic [ref=e87]:
+            - generic [ref=e88]: Seu e-mail
+            - textbox "Inscrever-se na newsletter" [ref=e89]:
+              - /placeholder: Seu e-mail
+            - generic "Enviar" [ref=e90] [cursor=pointer]:
+              - img [ref=e91]
+      - generic [ref=e93]:
+        - paragraph [ref=e94]: © 2025 ASOF. Todos os direitos reservados.
+        - generic [ref=e95]:
+          - link "Política de Privacidade" [ref=e96] [cursor=pointer]:
+            - /url: /privacidade
+          - link "Termos de Uso" [ref=e97] [cursor=pointer]:
+            - /url: /termos
+  - button "Open Next.js Dev Tools" [ref=e103] [cursor=pointer]:
+    - img [ref=e104]
+  - alert [ref=e107]
+```
