@@ -9,7 +9,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { ContentStatus } from '@prisma/client'
+import { ContentStatus, UserRole } from '@prisma/client'
+import { requireAuth } from '@/lib/auth-helpers'
 
 // GET /api/posts - Listar posts publicados
 export async function GET(request: NextRequest) {
@@ -124,26 +125,64 @@ export async function GET(request: NextRequest) {
 // POST /api/posts - Criar novo post
 export async function POST(request: NextRequest) {
   try {
+    // Verificar autenticação
+    const authResult = await requireAuth(request)
+    if ('error' in authResult) {
+      return authResult.error
+    }
+
+    const { session } = authResult
+
     const body = await request.json()
-
-    // TODO: Adicionar autenticação e validação
-    // const session = await getServerSession()
-    // if (!session) {
-    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    // }
-
-    const { title, slug, excerpt, content, categoryId, tags, status } = body
+    const {
+      title,
+      slug,
+      excerpt,
+      content,
+      status,
+      metaTitle,
+      metaDescription,
+      metaKeywords,
+      ogImage,
+      publishedAt,
+      scheduledAt,
+      featuredImageId,
+      isFeatured,
+      categoryId,
+      tagIds,
+    } = body
 
     // Validação básica
     if (!title || !slug || !content) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Missing required fields: title, slug, content',
+          error: 'Campos obrigatórios faltando: title, slug, content',
         },
         { status: 400 }
       )
     }
+
+    // Validar status de publicação
+    if (status === ContentStatus.PUBLISHED) {
+      const canPublish =
+        session.user.role === UserRole.SUPER_ADMIN ||
+        session.user.role === UserRole.ADMIN ||
+        session.user.role === UserRole.EDITOR
+
+      if (!canPublish) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Você não tem permissão para publicar posts. Envie para revisão.',
+          },
+          { status: 403 }
+        )
+      }
+    }
+
+    // Calcular reading time
+    const readingTime = Math.ceil(content.split(/\s+/).length / 200)
 
     // Criar post
     const post = await prisma.post.create({
@@ -153,9 +192,17 @@ export async function POST(request: NextRequest) {
         excerpt,
         content,
         status: status || ContentStatus.DRAFT,
-        authorId: 'user-id-from-session', // TODO: Get from session
+        authorId: session.user.id,
         categoryId,
-        readingTime: Math.ceil(content.split(' ').length / 200), // Aproximação
+        readingTime,
+        metaTitle,
+        metaDescription,
+        metaKeywords,
+        ogImage,
+        publishedAt: publishedAt ? new Date(publishedAt) : null,
+        scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
+        featuredImageId,
+        isFeatured: isFeatured || false,
       },
       include: {
         author: {
@@ -166,18 +213,30 @@ export async function POST(request: NextRequest) {
           },
         },
         category: true,
+        featuredImage: true,
       },
     })
 
     // Adicionar tags se fornecidas
-    if (tags && tags.length > 0) {
+    if (tagIds && tagIds.length > 0) {
       await prisma.postTag.createMany({
-        data: tags.map((tagId: string) => ({
+        data: tagIds.map((tagId: string) => ({
           postId: post.id,
           tagId,
         })),
       })
     }
+
+    // Registrar no audit log
+    await prisma.auditLog.create({
+      data: {
+        action: 'CREATE',
+        entityType: 'Post',
+        entityId: post.id,
+        userId: session.user.id,
+        description: `Post criado: ${post.title}`,
+      },
+    })
 
     return NextResponse.json(
       {
@@ -191,7 +250,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to create post',
+        error: 'Erro ao criar post',
       },
       { status: 500 }
     )
