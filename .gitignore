@@ -43,3 +43,8 @@ next-env.d.ts
 # prisma
 /prisma/migrations/*/migration.sql
 /node_modules/.prisma
+
+# playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
