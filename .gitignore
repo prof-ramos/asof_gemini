@@ -44,7 +44,5 @@ next-env.d.ts
 /prisma/migrations/*/migration.sql
 /node_modules/.prisma
 
-# playwright
-/test-results/
-/playwright-report/
-/playwright/.cache/
+# security
+.gemini_security/

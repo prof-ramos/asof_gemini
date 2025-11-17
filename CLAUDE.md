@@ -60,6 +60,11 @@ npm run test:e2e:mobile        # Test mobile viewports
 npm run test:a11y              # Accessibility tests only
 npm run test:performance       # Performance tests only
 npm run test:report            # View HTML test report
+
+# Run specific test file or test
+npx playwright test e2e/tests/static/homepage.spec.ts           # Single file
+npx playwright test -g "should load homepage"                   # By test name
+npx playwright test e2e/tests/static/homepage.spec.ts --headed  # Watch test run
 ```
 
 ### Database (Prisma - Optional, not currently used)
@@ -249,6 +254,7 @@ See `prisma/schema.prisma` and `/docs/database-*.md` for complete documentation.
 6. **Forgetting ARIA labels**: All icons and icon-only buttons need aria-label
 7. **Using CSS selectors in tests**: Use `getByRole()`, `getByText()` instead
 8. **Not testing on mobile**: Run `npm run test:e2e:mobile`
+9. **Committing sensitive files**: Never commit `.env`, `.gemini_security/`, or files with credentials
 
 ## Deployment
 
@@ -268,6 +274,56 @@ npm run test:e2e          # All tests must pass
 ```bash
 vercel --prod
 ```
+
+## Environment Variables
+
+**Note**: `DATABASE_URL` is required only when using Prisma/database features (currently optional, as the project uses MDX instead). Analytics and SMTP variables are optional/configurable - see `.env.development.local` for full defaults and examples.
+
+Critical environment variables (see `.env.example` for full list):
+
+```bash
+# Database (Prisma) - Required when using database features (currently optional, MDX-only)
+DATABASE_URL="postgresql://user:pass@host:5432/asof"
+
+# Analytics (auto-configured on Vercel) - Optional, enable for user insights and performance tracking
+NEXT_PUBLIC_ENABLE_ANALYTICS=true
+NEXT_PUBLIC_ENABLE_SPEED_INSIGHTS=true
+
+# Email (for contact form) - Optional, configure when contact form functionality is needed
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="your-email@gmail.com"
+SMTP_PASS="your-app-password"
+```
+
+## CI/CD Pipeline
+
+**GitHub Actions** automatically:
+- Runs E2E tests on push to `main` and PRs
+- Deploys to Vercel if all tests pass
+- Can be triggered manually via `workflow_dispatch`
+
+**Pre-commit checks**: Ensure `npm run lint` and `npm run build` pass locally.
+
+## Platform-Specific Notes
+
+**MacBook Air M3 (8GB RAM)**:
+- Playwright workers limited to 3 for optimal performance
+- E2E tests configured to avoid memory issues
+- Use `npm run test:e2e:chromium` for faster single-browser testing during development
+
+## Security & Performance Features
+
+**Security headers** (configured in `next.config.ts`):
+- Strict-Transport-Security (HSTS)
+- Content-Security-Policy (CSP)
+- X-Frame-Options: DENY
+- X-Content-Type-Options: nosniff
+
+**Monitoring**:
+- Vercel Analytics for user insights
+- Vercel Speed Insights for real-time Core Web Vitals
+- Web Vitals tracking via `/lib/performance.ts`
 
 ## Additional Documentation
 

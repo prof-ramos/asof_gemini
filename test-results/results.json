@@ -10,7 +10,9 @@
     "grep": {},
     "grepInvert": null,
     "maxFailures": 0,
-    "metadata": {},
+    "metadata": {
+      "actualWorkers": 3
+    },
     "preserveOutput": "always",
     "reporter": [
       [
@@ -41,7 +43,9 @@
         "outputDir": "/Users/gabrielramos/asof_gemini/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 3
+        },
         "id": "chromium",
         "name": "chromium",
         "testDir": "/Users/gabrielramos/asof_gemini/e2e",
@@ -55,7 +59,9 @@
         "outputDir": "/Users/gabrielramos/asof_gemini/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 3
+        },
         "id": "firefox",
         "name": "firefox",
         "testDir": "/Users/gabrielramos/asof_gemini/e2e",
@@ -69,7 +75,9 @@
         "outputDir": "/Users/gabrielramos/asof_gemini/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 3
+        },
         "id": "webkit",
         "name": "webkit",
         "testDir": "/Users/gabrielramos/asof_gemini/e2e",
@@ -83,7 +91,9 @@
         "outputDir": "/Users/gabrielramos/asof_gemini/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 3
+        },
         "id": "mobile-chrome",
         "name": "mobile-chrome",
         "testDir": "/Users/gabrielramos/asof_gemini/e2e",
@@ -97,7 +107,9 @@
         "outputDir": "/Users/gabrielramos/asof_gemini/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 3
+        },
         "id": "mobile-safari",
         "name": "mobile-safari",
         "testDir": "/Users/gabrielramos/asof_gemini/e2e",
@@ -111,7 +123,9 @@
         "outputDir": "/Users/gabrielramos/asof_gemini/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 3
+        },
         "id": "accessibility",
         "name": "accessibility",
         "testDir": "/Users/gabrielramos/asof_gemini/e2e",
@@ -136,19 +150,912 @@
       "stderr": "pipe"
     }
   },
-  "suites": [],
-  "errors": [
+  "suites": [
     {
-      "message": "Error: Timed out waiting 120000ms from config.webServer.",
-      "stack": "Error: Timed out waiting 120000ms from config.webServer."
+      "title": "tests/admin/login.spec.ts",
+      "file": "tests/admin/login.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Admin Login",
+          "file": "tests/admin/login.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "deve mostrar formulário de login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2709,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:13.749Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-c723fd8b5753b6d53abb",
+              "file": "tests/admin/login.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "login com Super Admin deve funcionar",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2939,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:13.719Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-3165a87c18baa58ac0d0",
+              "file": "tests/admin/login.spec.ts",
+              "line": 19,
+              "column": 7
+            },
+            {
+              "title": "login com dados incorretos deve falhar",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 8032,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n\n    at /Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts:37:62",
+                        "location": {
+                          "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                          "column": 62,
+                          "line": 37
+                        },
+                        "snippet": "  35 |\n  36 |     // Verificar mensagem de erro\n> 37 |     await expect(page.locator('text=Credenciais inválidas')).toBeVisible();\n     |                                                              ^\n  38 |   });\n  39 |\n  40 |   test('deve redirecionar para login quando não autenticado', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                            "column": 62,
+                            "line": 37
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n\n\n  35 |\n  36 |     // Verificar mensagem de erro\n> 37 |     await expect(page.locator('text=Credenciais inválidas')).toBeVisible();\n     |                                                              ^\n  38 |   });\n  39 |\n  40 |   test('deve redirecionar para login quando não autenticado', async ({ page }) => {\n    at /Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts:37:62"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:13.720Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                        "column": 62,
+                        "line": 37
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-866bc232948cc471367a",
+              "file": "tests/admin/login.spec.ts",
+              "line": 28,
+              "column": 7
+            },
+            {
+              "title": "deve redirecionar para login quando não autenticado",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2399,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:17.075Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-b7370e8a29c8b7c8fe0f",
+              "file": "tests/admin/login.spec.ts",
+              "line": 40,
+              "column": 7
+            },
+            {
+              "title": "deve mostrar formulário de login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2495,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:17.804Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-22ec39cc7cc18df2e190",
+              "file": "tests/admin/login.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "login com Super Admin deve funcionar",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2206,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:19.875Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-209e13416170085b97e2",
+              "file": "tests/admin/login.spec.ts",
+              "line": 19,
+              "column": 7
+            },
+            {
+              "title": "login com dados incorretos deve falhar",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 6157,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n\n    at /Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts:37:62",
+                        "location": {
+                          "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                          "column": 62,
+                          "line": 37
+                        },
+                        "snippet": "  35 |\n  36 |     // Verificar mensagem de erro\n> 37 |     await expect(page.locator('text=Credenciais inválidas')).toBeVisible();\n     |                                                              ^\n  38 |   });\n  39 |\n  40 |   test('deve redirecionar para login quando não autenticado', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                            "column": 62,
+                            "line": 37
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n\n\n  35 |\n  36 |     // Verificar mensagem de erro\n> 37 |     await expect(page.locator('text=Credenciais inválidas')).toBeVisible();\n     |                                                              ^\n  38 |   });\n  39 |\n  40 |   test('deve redirecionar para login quando não autenticado', async ({ page }) => {\n    at /Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts:37:62"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:22.506Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                        "column": 62,
+                        "line": 37
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-207a11f6586a21c096ae",
+              "file": "tests/admin/login.spec.ts",
+              "line": 28,
+              "column": 7
+            },
+            {
+              "title": "deve redirecionar para login quando não autenticado",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 2132,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:23.083Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-65117fa03e8169d2b0d1",
+              "file": "tests/admin/login.spec.ts",
+              "line": 40,
+              "column": 7
+            },
+            {
+              "title": "deve mostrar formulário de login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2151,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:23.362Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-0954dcb8eea49eee49c5",
+              "file": "tests/admin/login.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "login com Super Admin deve funcionar",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1588,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:27.181Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-3508c11c374a2c4da138",
+              "file": "tests/admin/login.spec.ts",
+              "line": 19,
+              "column": 7
+            },
+            {
+              "title": "login com dados incorretos deve falhar",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 6820,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n\n    at /Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts:37:62",
+                        "location": {
+                          "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                          "column": 62,
+                          "line": 37
+                        },
+                        "snippet": "  35 |\n  36 |     // Verificar mensagem de erro\n> 37 |     await expect(page.locator('text=Credenciais inválidas')).toBeVisible();\n     |                                                              ^\n  38 |   });\n  39 |\n  40 |   test('deve redirecionar para login quando não autenticado', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                            "column": 62,
+                            "line": 37
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n\n\n  35 |\n  36 |     // Verificar mensagem de erro\n> 37 |     await expect(page.locator('text=Credenciais inválidas')).toBeVisible();\n     |                                                              ^\n  38 |   });\n  39 |\n  40 |   test('deve redirecionar para login quando não autenticado', async ({ page }) => {\n    at /Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts:37:62"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:26.292Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-webkit/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-webkit/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-webkit/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                        "column": 62,
+                        "line": 37
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-43f46fbcae5798cc677a",
+              "file": "tests/admin/login.spec.ts",
+              "line": 28,
+              "column": 7
+            },
+            {
+              "title": "deve redirecionar para login quando não autenticado",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2037,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:30.039Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-d009ce71ed73eef64cc5",
+              "file": "tests/admin/login.spec.ts",
+              "line": 40,
+              "column": 7
+            },
+            {
+              "title": "deve mostrar formulário de login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-chrome",
+                  "projectName": "mobile-chrome",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1387,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:30.040Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-803511c7a8b156d344bf",
+              "file": "tests/admin/login.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "login com Super Admin deve funcionar",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-chrome",
+                  "projectName": "mobile-chrome",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1500,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:31.905Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-8a6e1dc31822a6b84a43",
+              "file": "tests/admin/login.spec.ts",
+              "line": 19,
+              "column": 7
+            },
+            {
+              "title": "login com dados incorretos deve falhar",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-chrome",
+                  "projectName": "mobile-chrome",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 5949,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n\n    at /Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts:37:62",
+                        "location": {
+                          "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                          "column": 62,
+                          "line": 37
+                        },
+                        "snippet": "  35 |\n  36 |     // Verificar mensagem de erro\n> 37 |     await expect(page.locator('text=Credenciais inválidas')).toBeVisible();\n     |                                                              ^\n  38 |   });\n  39 |\n  40 |   test('deve redirecionar para login quando não autenticado', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                            "column": 62,
+                            "line": 37
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n\n\n  35 |\n  36 |     // Verificar mensagem de erro\n> 37 |     await expect(page.locator('text=Credenciais inválidas')).toBeVisible();\n     |                                                              ^\n  38 |   });\n  39 |\n  40 |   test('deve redirecionar para login quando não autenticado', async ({ page }) => {\n    at /Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts:37:62"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:33.506Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-mobile-chrome/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-mobile-chrome/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-mobile-chrome/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                        "column": 62,
+                        "line": 37
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-4cc3316c7567a4e2f0f7",
+              "file": "tests/admin/login.spec.ts",
+              "line": 28,
+              "column": 7
+            },
+            {
+              "title": "deve redirecionar para login quando não autenticado",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-chrome",
+                  "projectName": "mobile-chrome",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1292,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:33.519Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-198d4c6b945d0cc8841b",
+              "file": "tests/admin/login.spec.ts",
+              "line": 40,
+              "column": 7
+            },
+            {
+              "title": "deve mostrar formulário de login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-safari",
+                  "projectName": "mobile-safari",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 947,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:33.869Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-d0e0e98d1ddb8f6ba43e",
+              "file": "tests/admin/login.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "login com Super Admin deve funcionar",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-safari",
+                  "projectName": "mobile-safari",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1025,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:35.430Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-1318c66d4600dbe4c57f",
+              "file": "tests/admin/login.spec.ts",
+              "line": 19,
+              "column": 7
+            },
+            {
+              "title": "login com dados incorretos deve falhar",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-safari",
+                  "projectName": "mobile-safari",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 5982,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n\n    at /Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts:37:62",
+                        "location": {
+                          "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                          "column": 62,
+                          "line": 37
+                        },
+                        "snippet": "  35 |\n  36 |     // Verificar mensagem de erro\n> 37 |     await expect(page.locator('text=Credenciais inválidas')).toBeVisible();\n     |                                                              ^\n  38 |   });\n  39 |\n  40 |   test('deve redirecionar para login quando não autenticado', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                            "column": 62,
+                            "line": 37
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Credenciais inválidas')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Credenciais inválidas')\u001b[22m\n\n\n  35 |\n  36 |     // Verificar mensagem de erro\n> 37 |     await expect(page.locator('text=Credenciais inválidas')).toBeVisible();\n     |                                                              ^\n  38 |   });\n  39 |\n  40 |   test('deve redirecionar para login quando não autenticado', async ({ page }) => {\n    at /Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts:37:62"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:35.373Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-mobile-safari/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-mobile-safari/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/gabrielramos/asof_gemini/test-results/tests-admin-login-Admin-Lo-83496-ados-incorretos-deve-falhar-mobile-safari/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/gabrielramos/asof_gemini/e2e/tests/admin/login.spec.ts",
+                        "column": 62,
+                        "line": 37
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-a27e574d530c608a2cdd",
+              "file": "tests/admin/login.spec.ts",
+              "line": 28,
+              "column": 7
+            },
+            {
+              "title": "deve redirecionar para login quando não autenticado",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-safari",
+                  "projectName": "mobile-safari",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1245,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-17T01:55:36.662Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "39c8ba8fc93a5b3018fa-49b9cf0335bf72cbe3fa",
+              "file": "tests/admin/login.spec.ts",
+              "line": 40,
+              "column": 7
+            }
+          ]
+        }
+      ]
     }
   ],
+  "errors": [],
   "stats": {
-    "startTime": "2025-11-16T07:23:55.858Z",
-    "duration": 319970.123,
-    "expected": 0,
+    "startTime": "2025-11-17T01:55:08.470Z",
+    "duration": 32985.472,
+    "expected": 15,
     "skipped": 0,
-    "unexpected": 0,
+    "unexpected": 5,
     "flaky": 0
   }
 }

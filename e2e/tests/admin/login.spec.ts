@@ -30,11 +30,14 @@ test.describe('Admin Login', () => {
     await page.locator('#password').fill('senhaerrada');
     await page.locator('button[type="submit"]').click();
 
+    // Aguardar processamento e mudança de estado
+    await page.waitForTimeout(500);
+
     // Verificar se ainda estamos na página de login
     await expect(page).toHaveURL(/.*login/);
 
     // Verificar mensagem de erro
-    await expect(page.locator('text=Credenciais inválidas')).toBeVisible();
+    await expect(page.locator('text=Email ou senha inválidos')).toBeVisible();
   });
 
   test('deve redirecionar para login quando não autenticado', async ({ page }) => {
