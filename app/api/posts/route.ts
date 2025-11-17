@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
 import { Prisma } from '@prisma/client'
-
 import prisma from '@/lib/prisma'
 import { CreatePostRequest } from '@/types/post'
-// import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 /**
  * GET /api/posts - Retrieve all published posts with pagination support
@@ -65,12 +62,40 @@ export async function GET(request: Request) {
  * @returns Response with created post data or error response
  */
 export async function POST(request: Request) {
-  // const session = await getServerSession(authOptions)
-  // if (!session || !['ADMIN', 'EDITOR', 'AUTHOR'].includes(session.user.role)) {
-  //   return NextResponse.json({ message: 'Unauthorized' }, { status: 403 })
-  // }
+  // Verificar autenticação via cookie
+  const cookies = request.headers.get('cookie') || ''
+  const authTokenMatch = cookies.match(/admin-auth-token=([^;]+)/)
+  const authToken = authTokenMatch ? authTokenMatch[1] : null
+
+  if (!authToken) {
+    return NextResponse.json(
+      { message: 'Não autorizado - Token de autenticação ausente' },
+      { status: 401 }
+    )
+  }
 
   try {
+    // Validar sessão e extrair userId
+    const session = await prisma.session.findUnique({
+      where: { sessionToken: authToken },
+      include: { user: { select: { id: true, role: true } } },
+    })
+
+    if (!session || session.expires < new Date()) {
+      return NextResponse.json(
+        { message: 'Não autorizado - Sessão inválida ou expirada' },
+        { status: 401 }
+      )
+    }
+
+    // Verificar permissões: apenas ADMIN, EDITOR e AUTHOR podem criar posts
+    if (!['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'AUTHOR'].includes(session.user.role)) {
+      return NextResponse.json(
+        { message: 'Não autorizado - Permissão insuficiente' },
+        { status: 403 }
+      )
+    }
+
     const body: CreatePostRequest = await request.json()
     const {
       title,
@@ -79,13 +104,12 @@ export async function POST(request: Request) {
       categoryId,
       isFeatured,
       publishedAt,
-      authorId, // This should come from the session in a real app
     } = body
 
     // Basic validation
     if (!title || !content) {
       return NextResponse.json(
-        { message: 'Title and content are required.' },
+        { message: 'Título e conteúdo são obrigatórios.' },
         { status: 400 },
       )
     }
@@ -104,7 +128,7 @@ export async function POST(request: Request) {
         categoryId,
         isFeatured,
         publishedAt,
-        authorId: 'user-placeholder-id', // Replace with session.user.id,
+        authorId: session.user.id, // Usar userId da sessão autenticada
       },
     })
 

@@ -118,10 +118,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Salvar metadados no banco de dados
-    // TODO: Obter userId do token de autenticação
-    // Por enquanto, usar um userId fixo para desenvolvimento
-    const userId = 'dev-user-id'
+    // Extrair userId da sessão autenticada
+    const session = await prisma.session.findUnique({
+      where: { sessionToken: authToken },
+      select: { userId: true },
+    })
+
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Sessão inválida ou expirada' },
+        { status: 401 }
+      )
+    }
+
+    const userId = session.userId
 
     const media = await prisma.media.create({
       data: {

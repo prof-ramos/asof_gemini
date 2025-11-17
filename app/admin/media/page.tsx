@@ -49,19 +49,20 @@ export default function MediaPage() {
   const fetchMediaItems = async () => {
     setLoading(true)
     try {
-      // TODO: Replace with actual API call
+      // Fetch media from API endpoint
       const response = await fetch('/api/media')
-      if (response.ok) {
-        const data = await response.json()
-        setMediaItems(data.items || [])
-      } else {
-        // Mock data for development
-        setMediaItems(getMockData())
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || `API Error: ${response.status}`)
       }
+
+      const data = await response.json()
+      setMediaItems(data.items || [])
     } catch (error) {
       console.error('Error fetching media:', error)
-      // Use mock data on error
-      setMediaItems(getMockData())
+      // Show empty state or error message instead of silently using mock data
+      setMediaItems([])
     } finally {
       setLoading(false)
     }
@@ -277,41 +278,4 @@ export default function MediaPage() {
       />
     </div>
   )
-}
-
-// Mock data for development
-function getMockData(): MediaItem[] {
-  return [
-    {
-      id: '1',
-      fileName: 'asof-logo.png',
-      originalName: 'asof-logo.png',
-      url: '/images/asof-hero.jpg',
-      type: 'IMAGE',
-      size: 245678,
-      width: 1200,
-      height: 800,
-      mimeType: 'image/png',
-      alt: 'Logo ASOF',
-      createdAt: new Date().toISOString(),
-      uploader: {
-        name: 'Admin',
-        email: 'admin@asof.org.br',
-      },
-    },
-    {
-      id: '2',
-      fileName: 'documento.pdf',
-      originalName: 'relatorio-anual-2024.pdf',
-      url: '/documents/sample.pdf',
-      type: 'DOCUMENT',
-      size: 1245678,
-      mimeType: 'application/pdf',
-      createdAt: new Date(Date.now() - 86400000).toISOString(),
-      uploader: {
-        name: 'Admin',
-        email: 'admin@asof.org.br',
-      },
-    },
-  ]
 }

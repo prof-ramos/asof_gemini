@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-
 import prisma from '@/lib/prisma'
 import { UpdatePostRequest } from '@/types/post'
-// import { authOptions } from '@/app/api/auth/[...nextauth]/route' // Adjust this import based on your auth options file path
 
 /**
  * GET /api/posts/[id] - Retrieve a single post by ID
@@ -28,25 +25,51 @@ export async function GET(
     })
 
     if (!post) {
-      return NextResponse.json({ message: 'Post not found' }, { status: 404 })
+      return NextResponse.json({ message: 'Post não encontrado' }, { status: 404 })
     }
 
-    // For published posts, it's public
+    // Para posts publicados, é público
     if (post.status === 'PUBLISHED') {
       return NextResponse.json(post)
     }
 
-    // For non-published posts, check session
-    // const session = await getServerSession(authOptions)
-    // if (!session || !['ADMIN', 'EDITOR'].includes(session.user.role)) {
-    //   return NextResponse.json({ message: 'Unauthorized' }, { status: 403 })
-    // }
+    // Para posts não publicados, verificar autenticação
+    const cookies = request.headers.get('cookie') || ''
+    const authTokenMatch = cookies.match(/admin-auth-token=([^;]+)/)
+    const authToken = authTokenMatch ? authTokenMatch[1] : null
+
+    if (!authToken) {
+      return NextResponse.json(
+        { message: 'Não autorizado - Token de autenticação ausente' },
+        { status: 401 }
+      )
+    }
+
+    const session = await prisma.session.findUnique({
+      where: { sessionToken: authToken },
+      include: { user: { select: { id: true, role: true } } },
+    })
+
+    if (!session || session.expires < new Date()) {
+      return NextResponse.json(
+        { message: 'Não autorizado - Sessão inválida ou expirada' },
+        { status: 401 }
+      )
+    }
+
+    // Apenas ADMIN, EDITOR e AUTHOR podem ver posts em rascunho
+    if (!['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'AUTHOR'].includes(session.user.role)) {
+      return NextResponse.json(
+        { message: 'Não autorizado - Permissão insuficiente' },
+        { status: 403 }
+      )
+    }
 
     return NextResponse.json(post)
   } catch (error) {
     console.error('Error fetching post:', error)
     return NextResponse.json(
-      { message: 'An error occurred while fetching the post.' },
+      { message: 'Um erro ocorreu ao buscar o post.' },
       { status: 500 },
     )
   }
@@ -62,12 +85,40 @@ export async function PUT(
   request: Request,
   { params }: { params: { id: string } },
 ) {
-  // const session = await getServerSession(authOptions)
-  // if (!session || !['ADMIN', 'EDITOR'].includes(session.user.role)) {
-  //   return NextResponse.json({ message: 'Unauthorized' }, { status: 403 })
-  // }
+  // Verificar autenticação via cookie
+  const cookies = request.headers.get('cookie') || ''
+  const authTokenMatch = cookies.match(/admin-auth-token=([^;]+)/)
+  const authToken = authTokenMatch ? authTokenMatch[1] : null
+
+  if (!authToken) {
+    return NextResponse.json(
+      { message: 'Não autorizado - Token de autenticação ausente' },
+      { status: 401 }
+    )
+  }
 
   try {
+    // Validar sessão e extrair role
+    const session = await prisma.session.findUnique({
+      where: { sessionToken: authToken },
+      include: { user: { select: { id: true, role: true } } },
+    })
+
+    if (!session || session.expires < new Date()) {
+      return NextResponse.json(
+        { message: 'Não autorizado - Sessão inválida ou expirada' },
+        { status: 401 }
+      )
+    }
+
+    // Apenas ADMIN e EDITOR podem atualizar posts
+    if (!['SUPER_ADMIN', 'ADMIN', 'EDITOR'].includes(session.user.role)) {
+      return NextResponse.json(
+        { message: 'Não autorizado - Permissão insuficiente' },
+        { status: 403 }
+      )
+    }
+
     const body: UpdatePostRequest = await request.json()
     const {
       title,
@@ -79,6 +130,7 @@ export async function PUT(
       publishedAt,
     } = body
 
+    // Atualizar post SEM PERMITIR alteração do autor (imutável)
     const post = await prisma.post.update({
       where: { id: params.id },
       data: {
@@ -89,7 +141,7 @@ export async function PUT(
         categoryId,
         isFeatured,
         publishedAt,
-        // authorId: session.user.id, // Ensure author is not changed on update unless intended
+        // authorId nunca é alterado após criação (mantém integridade)
       },
     })
 
@@ -97,7 +149,7 @@ export async function PUT(
   } catch (error) {
     console.error('Error updating post:', error)
     return NextResponse.json(
-      { message: 'An error occurred while updating the post.' },
+      { message: 'Um erro ocorreu ao atualizar o post.' },
       { status: 500 },
     )
   }
@@ -113,13 +165,41 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } },
 ) {
-  // const session = await getServerSession(authOptions)
-  // if (!session || !['ADMIN', 'EDITOR'].includes(session.user.role)) {
-  //   return NextResponse.json({ message: 'Unauthorized' }, { status: 403 })
-  // }
+  // Verificar autenticação via cookie
+  const cookies = request.headers.get('cookie') || ''
+  const authTokenMatch = cookies.match(/admin-auth-token=([^;]+)/)
+  const authToken = authTokenMatch ? authTokenMatch[1] : null
+
+  if (!authToken) {
+    return NextResponse.json(
+      { message: 'Não autorizado - Token de autenticação ausente' },
+      { status: 401 }
+    )
+  }
 
   try {
-    // Using soft delete by default
+    // Validar sessão e extrair role
+    const session = await prisma.session.findUnique({
+      where: { sessionToken: authToken },
+      include: { user: { select: { role: true } } },
+    })
+
+    if (!session || session.expires < new Date()) {
+      return NextResponse.json(
+        { message: 'Não autorizado - Sessão inválida ou expirada' },
+        { status: 401 }
+      )
+    }
+
+    // Apenas SUPER_ADMIN e ADMIN podem deletar posts
+    if (!['SUPER_ADMIN', 'ADMIN'].includes(session.user.role)) {
+      return NextResponse.json(
+        { message: 'Não autorizado - Apenas administradores podem deletar posts' },
+        { status: 403 }
+      )
+    }
+
+    // Soft delete: marcar como deletado em vez de remover
     await prisma.post.update({
       where: { id: params.id },
       data: {
@@ -128,11 +208,11 @@ export async function DELETE(
       },
     })
 
-    return NextResponse.json({ message: 'Post deleted successfully' })
+    return NextResponse.json({ message: 'Post deletado com sucesso' })
   } catch (error) {
     console.error('Error deleting post:', error)
     return NextResponse.json(
-      { message: 'An error occurred while deleting the post.' },
+      { message: 'Um erro ocorreu ao deletar o post.' },
       { status: 500 },
     )
   }

@@ -70,14 +70,15 @@ export default function MediaUpload({ onUploadComplete }: MediaUploadProps) {
         const formData = new FormData()
         formData.append('file', files[i].file)
 
-        // TODO: Replace with actual API endpoint
+        // Upload to media API endpoint
         const response = await fetch('/api/media/upload', {
           method: 'POST',
           body: formData,
         })
 
         if (!response.ok) {
-          throw new Error('Upload failed')
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Upload failed')
         }
 
         // Update status to success
