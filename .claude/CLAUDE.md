@@ -2,15 +2,15 @@
 
 ## Visão Geral do Projeto
 
-**Projeto**: Site Institucional ASOF - Associação dos Oficiais de Chancelaria  
-**Framework**: Next.js 15 com App Router  
-**Linguagem**: TypeScript (strict mode)  
-**Estilização**: Tailwind CSS 3.4  
-**Banco de Dados**: Prisma + PostgreSQL (preparado, não em uso no frontend)  
-**Testes**: Playwright (E2E)  
-**Deployment**: Vercel  
+**Projeto**: Site Institucional ASOF - Associação dos Oficiais de Chancelaria
+**Framework**: Next.js 15 com App Router
+**Linguagem**: TypeScript (strict mode)
+**Estilização**: Tailwind CSS 3.4 + Framer Motion
+**Banco de Dados**: Prisma + PostgreSQL (**ATIVO - admin panel e autenticação**)
+**Testes**: Playwright (E2E)
+**Deployment**: Vercel
 
-O projeto é um site institucional moderno com blog em MDX, testes E2E completos e um schema de banco de dados pronto para implementação de CMS/admin.
+O projeto é um site institucional moderno com **painel admin completo**, sistema de autenticação, REST API, blog em MDX, animações com Framer Motion, banco de dados PostgreSQL via Prisma, e testes E2E completos.
 
 ---
 
@@ -24,6 +24,26 @@ asof_gemini/
 │   ├── layout.tsx           # Layout raiz com metadata, Header, Footer
 │   ├── globals.css          # Estilos globais + Tailwind
 │   ├── page.tsx             # Homepage
+│   ├── login/               # 🔐 Página de login admin
+│   │   └── page.tsx
+│   ├── admin/               # 🔐 Painel administrativo (protegido)
+│   │   ├── layout.tsx       # Layout com sidebar e header
+│   │   ├── page.tsx         # Dashboard principal
+│   │   └── media/           # Biblioteca de mídia
+│   │       └── page.tsx
+│   ├── api/                 # 🔌 REST API Routes
+│   │   ├── auth/            # Autenticação
+│   │   │   ├── login/route.ts
+│   │   │   └── logout/route.ts
+│   │   ├── posts/           # Posts CRUD
+│   │   │   ├── route.ts
+│   │   │   └── [slug]/route.ts
+│   │   ├── media/           # Mídia CRUD
+│   │   │   ├── route.ts
+│   │   │   ├── upload/route.ts
+│   │   │   └── [id]/route.ts
+│   │   └── categories/      # Categorias
+│   │       └── route.ts
 │   ├── [pasta]/page.tsx     # Páginas estáticas (sobre, atuacao, contato, etc)
 │   └── noticias/
 │       ├── page.tsx         # Listagem de notícias
@@ -32,6 +52,14 @@ asof_gemini/
 ├── components/
 │   ├── ui/                  # Componentes reutilizáveis (Button, Card, Badge, etc)
 │   ├── layout/              # Layout components (Header, Footer, MobileMenu)
+│   ├── admin/               # 🔐 Componentes do painel admin
+│   │   ├── AdminHeader.tsx
+│   │   ├── MediaUpload.tsx
+│   │   ├── MediaGrid.tsx
+│   │   ├── MediaPreview.tsx
+│   │   └── MediaFilters.tsx
+│   ├── effects/             # ✨ Componentes de animação
+│   │   └── RevealOnScroll.tsx
 │   ├── sections/            # Seções da homepage (Hero, About, Pillars, News, CTA)
 │   └── mdx/                 # Componentes para renderização MDX
 │
@@ -40,13 +68,21 @@ asof_gemini/
 │   ├── constants.ts        # SITE_CONFIG, NAV_ITEMS, COLORS
 │   ├── fonts.ts            # Playfair Display + Inter otimizadas
 │   ├── design-tokens.ts    # Sistema de spacing, button heights, icon sizes
+│   ├── motion-config.ts    # ✨ Configuração Framer Motion (easing, duration, stagger)
+│   ├── motion-variants.ts  # ✨ Variantes de animação reutilizáveis
 │   ├── color-combinations.ts # Paleta de cores e combinações
 │   ├── mdx.ts              # Funções para processar MDX
 │   ├── prisma.ts           # Prisma Client singleton
 │   └── performance.ts      # Web Vitals e análise
 │
 ├── hooks/
-│   └── useScrollPosition.ts # Hook customizado para detecção de scroll
+│   ├── ui/
+│   │   ├── useScrollPosition.ts  # Detecção de scroll
+│   │   └── index.ts              # Barrel exports
+│   ├── useWebVitals.ts          # Tracking Web Vitals
+│   ├── useMousePosition.ts      # Posição do mouse
+│   ├── useReducedMotion.ts      # Preferência de animação reduzida
+│   └── index.ts                 # Barrel exports
 │
 ├── types/
 │   └── index.ts            # Interfaces TypeScript (ButtonProps, CardProps, etc)
@@ -86,9 +122,12 @@ asof_gemini/
 | **UI Library** | React | 19.0.0 |
 | **Linguagem** | TypeScript | 5+ |
 | **Estilos** | Tailwind CSS | 3.4.1 |
+| **Animações** | Framer Motion | 12.23.24 |
 | **Blog** | MDX | 3.1.1 |
-| **ORM** | Prisma | 5.22.0 |
+| **ORM** | Prisma | 6.19.0 |
 | **Database** | PostgreSQL | 15+ |
+| **Autenticação** | bcryptjs | 3.0.3 |
+| **Storage** | Vercel Blob | 2.0.0 |
 | **Testes** | Playwright | 1.49.0 |
 | **Ícones** | Lucide React | 0.553.0 |
 | **Analytics** | Vercel Analytics & Speed Insights | latest |
@@ -262,6 +301,276 @@ Use no Tailwind:
 ```tailwind
 font-serif  /* Playfair Display */
 font-sans   /* Inter */
+```
+
+### Sistema de Animações - Framer Motion
+
+O projeto usa Framer Motion para animações elegantes e acessíveis. Todas as configurações estão centralizadas em `/lib/motion-config.ts`.
+
+#### Easing Functions
+```typescript
+import { EASING } from '@/lib/motion-config'
+
+EASING.elegant    // [0.22, 1, 0.36, 1] - Hero animations, principais
+EASING.smooth     // [0.4, 0, 0.2, 1] - Hover effects, padrão
+EASING.spring     // [0.68, -0.55, 0.265, 1.55] - Bounce sutil (usar com moderação)
+EASING.sharp      // [0.4, 0, 0.6, 1] - Modais, dropdowns
+EASING.easeOut    // [0, 0, 0.2, 1] - Scroll reveals
+EASING.easeIn     // [0.4, 0, 1, 1] - Exit animations
+```
+
+#### Durações Padronizadas
+```typescript
+import { DURATION } from '@/lib/motion-config'
+
+DURATION.instant   // 0s - Mudanças imediatas
+DURATION.fast      // 0.15s - Button hover
+DURATION.quick     // 0.25s - Dropdowns, tooltips
+DURATION.normal    // 0.4s - Cards hover, state changes
+DURATION.slow      // 0.6s - Section reveals
+DURATION.elegant   // 0.8s - Hero animations
+DURATION.verySlow  // 1.2s - Background effects
+```
+
+#### Stagger Effects
+```typescript
+import { STAGGER } from '@/lib/motion-config'
+
+STAGGER.sm  // 0.05s - Lista pequena (3-5 items)
+STAGGER.md  // 0.1s - Grid de cards, navigation
+STAGGER.lg  // 0.15s - Seções grandes
+STAGGER.xl  // 0.2s - Timeline effects
+```
+
+#### Uso Básico
+```typescript
+import { motion } from 'framer-motion'
+import { TRANSITION } from '@/lib/motion-config'
+
+// Fade in simples
+<motion.div
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={TRANSITION.default}
+>
+  Content
+</motion.div>
+
+// Slide up + fade
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={TRANSITION.elegant}
+>
+  Content
+</motion.div>
+```
+
+#### Scroll-Triggered Animations
+```typescript
+import { RevealOnScroll } from '@/components/effects/RevealOnScroll'
+
+// Usando componente pronto
+<RevealOnScroll variant="fadeInUp">
+  <div>Conteúdo que anima no scroll</div>
+</RevealOnScroll>
+
+// Manual com viewport
+import { VIEWPORT } from '@/lib/motion-config'
+<motion.div
+  initial={{ opacity: 0, y: 30 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={VIEWPORT.default}
+  transition={TRANSITION.slow}
+>
+  Content
+</motion.div>
+```
+
+#### Reduced Motion (Acessibilidade)
+```typescript
+import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { getTransition } from '@/lib/motion-config'
+
+function MyComponent() {
+  const prefersReducedMotion = useReducedMotion()
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={getTransition('elegant', prefersReducedMotion)}
+    >
+      Content
+    </motion.div>
+  )
+}
+```
+
+---
+
+## 3.5 ADMIN PANEL, AUTENTICAÇÃO E API
+
+### Admin Panel (/app/admin)
+
+Painel administrativo completo com autenticação, controle de acesso por roles e gestão de conteúdo.
+
+#### Estrutura do Admin
+```
+/app/admin/
+├── layout.tsx          # Layout com sidebar e header
+├── page.tsx            # Dashboard principal
+├── media/              # Biblioteca de mídia
+│   └── page.tsx
+├── posts/              # Gestão de posts (futuro)
+├── users/              # Gestão de usuários (futuro)
+└── settings/           # Configurações (futuro)
+```
+
+#### Componentes Admin
+```typescript
+// AdminHeader - Header do painel com usuário logado
+import { AdminHeader } from '@/components/admin/AdminHeader'
+
+// MediaUpload - Upload de arquivos com drag & drop
+import { MediaUpload } from '@/components/admin/MediaUpload'
+
+// MediaGrid - Grid de mídia com preview
+import { MediaGrid } from '@/components/admin/MediaGrid'
+
+// MediaPreview - Modal de preview com detalhes
+import { MediaPreview } from '@/components/admin/MediaPreview'
+
+// MediaFilters - Filtros de mídia (tipo, data, etc)
+import { MediaFilters } from '@/components/admin/MediaFilters'
+```
+
+### Sistema de Autenticação
+
+Autenticação baseada em sessões com Prisma database.
+
+#### Login Flow
+```typescript
+// 1. Usuário submete credenciais em /login
+POST /api/auth/login
+{
+  "email": "admin@asof.org.br",
+  "password": "Admin123!@#"
+}
+
+// 2. Backend valida com bcrypt
+const isValid = await bcrypt.compare(password, user.password)
+
+// 3. Cria sessão no banco de dados
+const session = await prisma.session.create({
+  data: {
+    sessionToken: authToken,
+    userId: user.id,
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias
+  }
+})
+
+// 4. Retorna cookie HTTP-only
+response.cookies.set('admin-auth-token', authToken, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax',
+  maxAge: 60 * 60 * 24 * 7, // 7 dias
+})
+```
+
+#### Proteção de Rotas
+```typescript
+// Middleware ou check manual em páginas admin
+const authToken = cookies().get('admin-auth-token')
+if (!authToken) {
+  redirect('/login')
+}
+
+const session = await prisma.session.findUnique({
+  where: { sessionToken: authToken.value },
+  include: { user: true }
+})
+
+if (!session || session.expires < new Date()) {
+  redirect('/login')
+}
+```
+
+#### Roles e Permissões
+```typescript
+enum UserRole {
+  SUPER_ADMIN  // Acesso total ao sistema
+  ADMIN        // Gerenciar conteúdo e usuários
+  EDITOR       // Editar e publicar conteúdo
+  AUTHOR       // Criar e editar próprio conteúdo
+  VIEWER       // Apenas visualização
+}
+
+// Verificar role
+if (session.user.role !== 'SUPER_ADMIN' && session.user.role !== 'ADMIN') {
+  return { error: 'Sem permissão' }
+}
+```
+
+#### Segurança
+- ✅ Senhas hasheadas com bcrypt (salt rounds: 12)
+- ✅ Failed login tracking (5 tentativas = bloqueio 30min)
+- ✅ Account locking automático
+- ✅ Audit logging de todas as ações
+- ✅ HTTP-only cookies (não acessíveis via JavaScript)
+- ✅ CSRF protection via SameSite
+- ✅ IP address e user agent tracking
+
+### REST API Routes
+
+API completa para operações CRUD.
+
+#### Autenticação
+```bash
+POST   /api/auth/login     # Login com email/senha
+POST   /api/auth/logout    # Logout (invalida sessão)
+```
+
+#### Posts
+```bash
+GET    /api/posts          # Listar todos os posts
+POST   /api/posts          # Criar novo post
+GET    /api/posts/[slug]   # Buscar post por slug
+PUT    /api/posts/[slug]   # Atualizar post
+DELETE /api/posts/[slug]   # Deletar post (soft delete)
+```
+
+#### Media
+```bash
+GET    /api/media          # Listar mídia
+POST   /api/media/upload   # Upload de arquivo
+GET    /api/media/[id]     # Buscar mídia por ID
+PUT    /api/media/[id]     # Atualizar metadata
+DELETE /api/media/[id]     # Deletar mídia
+```
+
+#### Categories
+```bash
+GET    /api/categories     # Listar categorias
+POST   /api/categories     # Criar categoria
+PUT    /api/categories/[id] # Atualizar categoria
+DELETE /api/categories/[id] # Deletar categoria
+```
+
+#### Padrão de Resposta
+```typescript
+// Sucesso
+{
+  "success": true,
+  "data": { ... }
+}
+
+// Erro
+{
+  "error": "Mensagem de erro",
+  "details": { ... } // Opcional
+}
 ```
 
 ---
@@ -656,39 +965,122 @@ Se todos os testes passarem, deploy automático no Vercel.
 
 ---
 
-## 12. DATABASE & PRISMA (OPCIONAL - PREPARADO)
+## 12. DATABASE & PRISMA (**ATIVO**)
 
 ### Status Atual
 
-- ✅ Schema completo em `prisma/schema.prisma`
-- ✅ Documentação em `/docs/database-*.md`
-- ✅ Prisma Client configurado
-- ⏳ Não integrado ao frontend (usando MDX por enquanto)
+O banco de dados PostgreSQL com Prisma está **ATIVO** e sendo usado para:
+
+- ✅ **Autenticação e sessões** - Login/logout de usuários admin
+- ✅ **Admin panel** - Painel administrativo completo
+- ✅ **Biblioteca de mídia** - Upload e gestão de arquivos
+- ✅ **Audit logging** - Rastreamento de todas as ações
+- ✅ **Gestão de usuários** - Roles e permissões
+- ✅ **Posts** - Coexiste com MDX (futuro CMS dinâmico)
+- ⏳ **Comentários** - Schema pronto, não implementado
+- ⏳ **Documentos** - Schema pronto, não implementado
+
+### Configuração Inicial
+
+```bash
+# Primeira configuração
+npm run db:generate          # Gera Prisma Client
+npm run db:migrate           # Cria tabelas no banco
+npm run db:seed              # Popula com dados iniciais
+
+# Acessar o banco
+npm run db:studio            # Abre Prisma Studio (localhost:5555)
+```
+
+### Credenciais Admin Padrão (Seed)
+
+```
+Email: admin@asof.org.br
+Password: Admin123!@#
+Role: SUPER_ADMIN
+Status: ACTIVE
+```
+
+**⚠️ IMPORTANTE**: Altere a senha padrão em produção!
+
+### Variáveis de Ambiente Necessárias
+
+```bash
+# .env.local ou .env
+DATABASE_URL="postgresql://user:password@host:5432/asof"
+NEXTAUTH_SECRET="generate-with-openssl-rand-base64-32"
+```
 
 ### Modelos Principais
 
-| Modelo | Propósito |
-|--------|-----------|
-| `User` | Usuários do CMS com roles (ADMIN, EDITOR, AUTHOR) |
-| `Post` | Artigos e notícias com versionamento |
-| `Page` | Páginas estáticas (Sobre, Contato, etc) |
-| `Category` | Categorias hierárquicas |
-| `Tag` | Tags para classificação |
-| `Media` | Biblioteca de mídia (imagens, vídeos) |
-| `Comment` | Sistema de comentários (futuro) |
-| `Document` | Documentos para transparência |
-| `AuditLog` | Log de todas as ações |
-| `Setting` | Configurações do sistema |
+| Modelo | Propósito | Status |
+|--------|-----------|--------|
+| `User` | Usuários do CMS com roles (SUPER_ADMIN, ADMIN, EDITOR, AUTHOR, VIEWER) | ✅ Ativo |
+| `Session` | Sessões de autenticação (7 dias de validade) | ✅ Ativo |
+| `Media` | Biblioteca de mídia com storage references | ✅ Ativo |
+| `AuditLog` | Log completo de ações (CREATE, UPDATE, DELETE, LOGIN, etc) | ✅ Ativo |
+| `Post` | Artigos e notícias com versionamento | ✅ Ativo |
+| `Category` | Categorias hierárquicas | ✅ Ativo |
+| `Tag` | Tags para classificação | ✅ Ativo |
+| `Page` | Páginas estáticas (Sobre, Contato, etc) | ⏳ Pronto |
+| `Comment` | Sistema de comentários | ⏳ Pronto |
+| `Document` | Documentos para transparência | ⏳ Pronto |
+| `Setting` | Configurações do sistema (key-value) | ⏳ Pronto |
 
-### Quando Usar
+### Uso no Código
 
-Ative o database quando:
-1. Precisar de painel de administração
-2. Migrar de MDX para CMS dinâmico
-3. Implementar autenticação de usuários
-4. Sistema avançado de mídia/documentos
+```typescript
+// Importar Prisma Client
+import prisma from '@/lib/prisma'
 
-Ver `PRISMA_SETUP.md` para setup completo.
+// Buscar usuário
+const user = await prisma.user.findUnique({
+  where: { email: 'admin@asof.org.br' }
+})
+
+// Criar sessão
+const session = await prisma.session.create({
+  data: {
+    sessionToken: token,
+    userId: user.id,
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  }
+})
+
+// Registrar ação no audit log
+await prisma.auditLog.create({
+  data: {
+    action: 'LOGIN',
+    entityType: 'User',
+    entityId: user.id,
+    userId: user.id,
+    description: `Login bem-sucedido: ${user.email}`,
+  }
+})
+```
+
+### Migrations
+
+```bash
+# Criar nova migration
+npm run db:migrate
+
+# Aplicar migrations em produção
+npm run db:migrate:deploy
+
+# Reset completo (⚠️ deleta todos os dados!)
+npm run db:reset
+```
+
+### Prisma Studio
+
+GUI visual para explorar e editar dados:
+```bash
+npm run db:studio
+# Abre em http://localhost:5555
+```
+
+Ver `/docs/database-*.md` para documentação completa do schema e otimizações.
 
 ---
 
