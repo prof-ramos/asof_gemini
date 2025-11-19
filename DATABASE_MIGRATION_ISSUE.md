@@ -44,26 +44,41 @@ The direct connection to `db.prisma.io:5432` is **not accessible** from this env
 
 You have **3 options**:
 
-### Option 1: Vercel Postgres (RECOMMENDED - Fastest)
+### Option 1: Prisma Postgres (RECOMMENDED - Perfect Match) ⭐
+
+**Available via Vercel Marketplace** - Same company as Prisma Accelerate!
 
 **Pros:**
-- ✅ Setup in 5 minutes
-- ✅ Free tier (256MB)
-- ✅ Native Vercel integration
-- ✅ Works immediately
-- ✅ Can use BOTH Vercel Postgres + Prisma Accelerate together
+- ⭐ Same company (Prisma) - perfect integration
+- ✅ Setup in 5 minutes via Marketplace
+- ✅ Instant Serverless Postgres
+- ✅ Works perfectly with Prisma Accelerate
+- ✅ Auto-scaling included
 
 **How:**
-1. Create Vercel Postgres database: https://vercel.com/gabriel-ramos-projects-c71569/asof-gemini → Storage → Create
-2. Copy `POSTGRES_PRISMA_URL` and `POSTGRES_URL_NON_POOLING`
-3. Update `.env.local`:
+1. Vercel Dashboard → Storage → Marketplace → **Prisma Postgres**
+2. Add integration → Select asof-gemini project
+3. Copy `DATABASE_URL` provided
+4. Update `.env.local`:
    ```bash
-   DATABASE_URL="<POSTGRES_URL_NON_POOLING>"
-   PRISMA_DATABASE_URL="<POSTGRES_PRISMA_URL>"
+   DATABASE_URL="<Prisma Postgres DATABASE_URL>"
+   PRISMA_DATABASE_URL="<keep your Accelerate URL>"
    ```
-4. Run: `npx dotenv -e .env.local -- npx prisma db push`
+5. Run: `npx dotenv -e .env.local -- npx prisma db push`
 
-**See:** `VERCEL_POSTGRES_SETUP.md` for complete guide
+**See:** `PRISMA_POSTGRES_SETUP.md` for complete guide
+
+---
+
+### Option 2: Neon or Supabase (Vercel Marketplace)
+
+**Also available via Marketplace** - Great alternatives
+
+**How:**
+1. Vercel Dashboard → Storage → Marketplace → **Neon** or **Supabase**
+2. Add integration → Select project
+3. Copy `DATABASE_URL` provided
+4. Same steps as Prisma Postgres above
 
 ---
 

@@ -41,42 +41,50 @@
 
 O banco de dados PostgreSQL do Prisma Data Platform **não está acessível**. Isso é um bloqueador crítico.
 
-### ✅ SOLUÇÃO: Vercel Postgres (RECOMENDADO)
+### ✅ SOLUÇÃO: Prisma Postgres (RECOMENDADO) ⭐
 
-**📄 Guia completo:** Ver `VERCEL_POSTGRES_SETUP.md` para instruções passo a passo detalhadas.
+**📄 Guia completo:** Ver `PRISMA_POSTGRES_SETUP.md` para instruções detalhadas passo a passo.
+
+**Por que Prisma Postgres é ideal:**
+- ⭐ Mesma empresa que faz Prisma Accelerate (integração perfeita)
+- ✅ Instant Serverless Postgres
+- ✅ Disponível no Vercel Marketplace
+- ✅ Setup em 5 minutos
 
 **Quick Start (5 minutos):**
 
-1. **Criar database no Vercel:**
-   - Acesse: https://vercel.com/gabriel-ramos-projects-c71569/asof-gemini
-   - Storage → Create Database → Postgres
-   - Nome: `asof-production`
-   - Região: `Washington, D.C. (iad1)`
+1. **Acesse Vercel Marketplace:**
+   - Vá para: https://vercel.com/gabriel-ramos-projects-c71569/asof-gemini
+   - Storage → Marketplace Database Providers
+   - Clique em **"Prisma Postgres"**
 
-2. **Copiar variáveis geradas:**
+2. **Configure:**
+   - Add Integration → Selecione projeto asof-gemini
+   - Região: Washington, D.C. (iad1)
+   - Nome: asof-production
+
+3. **Copie DATABASE_URL gerado**
+
+4. **Atualize .env.local:**
    ```bash
-   POSTGRES_PRISMA_URL="postgres://...?pgbouncer=true"
-   POSTGRES_URL_NON_POOLING="postgres://...?sslmode=require"
+   DATABASE_URL="<Prisma Postgres DATABASE_URL>"
+   PRISMA_DATABASE_URL="<mantém seu Accelerate URL>"
    ```
 
-3. **Atualizar .env.local:**
-   ```bash
-   DATABASE_URL="<POSTGRES_URL_NON_POOLING>"
-   PRISMA_DATABASE_URL="<POSTGRES_PRISMA_URL>"
-   ```
-
-4. **Executar migrations:**
+5. **Execute migrations:**
    ```bash
    npx dotenv -e .env.local -- npx prisma db push
    npm run db:seed
    ```
 
 **Vantagens:**
-- ✅ Nativo Vercel (auto-configurado)
-- ✅ Gratuito até 256MB
-- ✅ Connection pooling incluído
+- ⭐ Integração perfeita com Prisma Accelerate
+- ✅ Serverless com auto-scaling
+- ✅ Connection pooling automático
 - ✅ Mesma região do app (iad1)
-- ✅ Dashboard SQL integrado
+- ✅ Setup via Marketplace (simples)
+
+**Alternativas:** Neon ou Supabase (também no Marketplace)
 
 #### Opção 2: Supabase (Alternativa gratuita)
 
