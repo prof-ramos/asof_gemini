@@ -33,43 +33,50 @@
 
 ---
 
-## ⚠️ BLOQUEADOR: Conexão com Database
+## 🚨 BLOQUEADOR: Conexão com Database
 
 ### Problema Atual
 
 **Erro:** `Can't reach database server at db.prisma.io:5432`
 
-O banco de dados PostgreSQL do Prisma Data Platform não está acessível. Isso pode ocorrer por:
+O banco de dados PostgreSQL do Prisma Data Platform **não está acessível**. Isso é um bloqueador crítico.
 
-1. **Credenciais expiradas** - Os tokens podem ter validade limitada
-2. **Banco não provisionado** - Pode ser necessário criar o banco primeiro
-3. **Firewall/Rede** - Restrições de acesso
-4. **Migração necessária** - Prisma pode ter mudado estrutura
+### ✅ SOLUÇÃO: Vercel Postgres (RECOMENDADO)
 
-### Soluções Possíveis
+**📄 Guia completo:** Ver `VERCEL_POSTGRES_SETUP.md` para instruções passo a passo detalhadas.
 
-#### Opção 1: Vercel Postgres (Recomendado)
+**Quick Start (5 minutos):**
 
-Se você está hospedando no Vercel, use **Vercel Postgres** nativo:
+1. **Criar database no Vercel:**
+   - Acesse: https://vercel.com/gabriel-ramos-projects-c71569/asof-gemini
+   - Storage → Create Database → Postgres
+   - Nome: `asof-production`
+   - Região: `Washington, D.C. (iad1)`
 
-```bash
-# No dashboard do Vercel:
-1. Acesse seu projeto "asof-gemini"
-2. Vá em "Storage" → "Create Database"
-3. Selecione "Postgres"
-4. Copie as variáveis de ambiente geradas
-5. Atualize .env.local com as novas credenciais
-```
+2. **Copiar variáveis geradas:**
+   ```bash
+   POSTGRES_PRISMA_URL="postgres://...?pgbouncer=true"
+   POSTGRES_URL_NON_POOLING="postgres://...?sslmode=require"
+   ```
 
-As variáveis geradas serão algo como:
-```bash
-POSTGRES_URL="postgres://..."
-POSTGRES_PRISMA_URL="postgres://..."
-POSTGRES_URL_NO_SSL="postgres://..."
-POSTGRES_URL_NON_POOLING="postgres://..."
-```
+3. **Atualizar .env.local:**
+   ```bash
+   DATABASE_URL="<POSTGRES_URL_NON_POOLING>"
+   PRISMA_DATABASE_URL="<POSTGRES_PRISMA_URL>"
+   ```
 
-Use `POSTGRES_PRISMA_URL` para o `DATABASE_URL`.
+4. **Executar migrations:**
+   ```bash
+   npx dotenv -e .env.local -- npx prisma db push
+   npm run db:seed
+   ```
+
+**Vantagens:**
+- ✅ Nativo Vercel (auto-configurado)
+- ✅ Gratuito até 256MB
+- ✅ Connection pooling incluído
+- ✅ Mesma região do app (iad1)
+- ✅ Dashboard SQL integrado
 
 #### Opção 2: Supabase (Alternativa gratuita)
 
