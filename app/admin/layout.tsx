@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Home, Image as ImageIcon, FileText, Users, Settings } from 'lucide-react'
+import { Toaster } from 'sonner'
 import AdminHeader from '@/components/admin/AdminHeader'
 
 export const metadata: Metadata = {
@@ -78,6 +79,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           {children}
         </main>
       </div>
+
+      {/* Toast Notifications */}
+      <Toaster position="top-right" richColors expand={false} duration={4000} />
     </div>
   )
 }
