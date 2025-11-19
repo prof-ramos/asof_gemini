@@ -1,10 +1,9 @@
-import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 import { Prisma } from '@prisma/client'
+import slugify from 'slugify'
 
 import prisma from '@/lib/prisma'
-import { CreatePostRequest } from '@/types/post'
-// import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 /**
  * GET /api/posts - Retrieve all published posts with pagination support
@@ -64,56 +63,142 @@ export async function GET(request: Request) {
  * @param request - The incoming HTTP request with post data
  * @returns Response with created post data or error response
  */
-export async function POST(request: Request) {
-  // const session = await getServerSession(authOptions)
-  // if (!session || !['ADMIN', 'EDITOR', 'AUTHOR'].includes(session.user.role)) {
-  //   return NextResponse.json({ message: 'Unauthorized' }, { status: 403 })
-  // }
-
+export async function POST(request: NextRequest) {
   try {
-    const body: CreatePostRequest = await request.json()
+    // Verify authentication
+    const authToken = cookies().get('admin-auth-token')
+    if (!authToken) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Get session and verify user
+    const session = await prisma.session.findUnique({
+      where: { sessionToken: authToken.value },
+      include: { user: true },
+    })
+
+    if (!session || session.expires < new Date()) {
+      return NextResponse.json({ error: 'Session expired' }, { status: 401 })
+    }
+
+    // Check permissions
+    if (!['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'AUTHOR'].includes(session.user.role)) {
+      return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
+    }
+
+    // Parse request body
+    const body = await request.json()
     const {
       title,
+      slug: providedSlug,
+      excerpt,
       content,
-      status,
+      status = 'DRAFT',
       categoryId,
-      isFeatured,
-      publishedAt,
-      authorId, // This should come from the session in a real app
+      featuredImageId,
+      metaTitle,
+      metaDescription,
+      ogImage,
+      isFeatured = false,
+      scheduledAt,
     } = body
 
-    // Basic validation
+    // Validation
     if (!title || !content) {
       return NextResponse.json(
-        { message: 'Title and content are required.' },
-        { status: 400 },
+        { error: 'Title and content are required' },
+        { status: 400 }
       )
     }
 
-    const slug = title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)+/g, '')
+    // Generate slug if not provided
+    let slug = providedSlug
+    if (!slug) {
+      slug = slugify(title, {
+        lower: true,
+        strict: true,
+        locale: 'pt',
+      })
+    }
 
+    // Check if slug already exists
+    const existingPost = await prisma.post.findUnique({
+      where: { slug },
+    })
+
+    if (existingPost) {
+      // Append timestamp to make it unique
+      slug = `${slug}-${Date.now()}`
+    }
+
+    // Calculate reading time (200 words per minute)
+    const words = content.trim().split(/\s+/).length
+    const readingTime = Math.ceil(words / 200)
+
+    // Create post
     const post = await prisma.post.create({
       data: {
         title,
-        slug, // Simple slug generation
+        slug,
+        excerpt,
         content,
         status,
-        categoryId,
+        authorId: session.user.id,
+        categoryId: categoryId || null,
+        featuredImageId: featuredImageId || null,
+        metaTitle: metaTitle || title,
+        metaDescription: metaDescription || excerpt,
+        ogImage: ogImage || null,
         isFeatured,
-        publishedAt,
-        authorId: 'user-placeholder-id', // Replace with session.user.id,
+        readingTime,
+        publishedAt: status === 'PUBLISHED' ? new Date() : null,
+        scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        category: true,
+        featuredImage: true,
       },
     })
 
-    return NextResponse.json(post, { status: 201 })
+    // Create initial revision
+    await prisma.postRevision.create({
+      data: {
+        postId: post.id,
+        title: post.title,
+        excerpt: post.excerpt,
+        content: post.content,
+        version: 1,
+        createdBy: session.user.id,
+      },
+    })
+
+    // Log action in audit log
+    await prisma.auditLog.create({
+      data: {
+        action: 'CREATE',
+        entityType: 'Post',
+        entityId: post.id,
+        userId: session.user.id,
+        description: `Created post: ${post.title}`,
+      },
+    })
+
+    return NextResponse.json({ post }, { status: 201 })
   } catch (error) {
     console.error('Error creating post:', error)
     return NextResponse.json(
-      { message: 'An error occurred while creating the post.' },
-      { status: 500 },
+      {
+        error: 'Failed to create post',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
     )
   }
 }
