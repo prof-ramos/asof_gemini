@@ -17,8 +17,11 @@ test.describe('Admin Login', () => {
   });
 
   test('login com Super Admin deve funcionar', async ({ page }) => {
+    // Usar senha do ambiente de teste (configurada no CI via INITIAL_ADMIN_PASSWORD)
+    const testPassword = process.env.INITIAL_ADMIN_PASSWORD || 'TestPassword123!@#';
+
     await page.locator('#email').fill('admin@asof.org.br');
-    await page.locator('#password').fill('senha123');
+    await page.locator('#password').fill(testPassword);
     await page.locator('button[type="submit"]').click();
 
     // Esperar redirecionamento para dashboard admin
