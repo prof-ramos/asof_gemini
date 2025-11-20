@@ -127,7 +127,7 @@ export default function PostFilters({ onFiltersChange, isLoading = false }: Post
         <div className="mt-4 flex flex-wrap gap-2">
           {filters.search && (
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary text-white">
-              Busca: "{filters.search}"
+              Busca: &ldquo;{filters.search}&rdquo;
               <button
                 onClick={() => handleFilterChange({ search: undefined })}
                 className="ml-2 text-white hover:text-gray-200"

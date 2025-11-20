@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -45,11 +45,7 @@ export default function PostList({ filters }: PostListProps) {
   const [error, setError] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchPosts()
-  }, [filters])
-
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     setIsLoading(true)
     setError(null)
 
@@ -76,7 +72,11 @@ export default function PostList({ filters }: PostListProps) {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [filters])
+
+  useEffect(() => {
+    fetchPosts()
+  }, [fetchPosts])
 
   const handleDelete = async (postId: string) => {
     if (!confirm('Tem certeza que deseja excluir este post? Esta ação não pode ser desfeita.')) {
