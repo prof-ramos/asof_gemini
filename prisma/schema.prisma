@@ -1,14 +1,14 @@
 // ASOF CMS Database Schema
 // Prisma schema for comprehensive content management system
 // Version: 1.0.0
-// Database: SQLite (development) / PostgreSQL (production)
+// Database: PostgreSQL (production-ready)
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import prisma from '@/lib/prisma'
+import { validateAuth, AuthError } from '@/lib/auth'
+import { UserRole } from '@prisma/client'
 
 /**
  * GET /api/posts/[id] - Retrieve a single post by ID
@@ -33,11 +35,25 @@ export async function GET(
       return NextResponse.json(post)
     }
 
-    // For non-published posts, check session
-    // const session = await getServerSession(authOptions)
-    // if (!session || !['ADMIN', 'EDITOR'].includes(session.user.role)) {
-    //   return NextResponse.json({ message: 'Unauthorized' }, { status: 403 })
-    // }
+    // For non-published posts, require authentication
+    let session
+    try {
+      session = await validateAuth({
+        requireRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EDITOR, UserRole.AUTHOR],
+      })
+    } catch (error) {
+      if (error instanceof AuthError) {
+        return NextResponse.json({ error: error.message }, { status: error.statusCode })
+      }
+      return NextResponse.json({ error: 'Erro de autenticação' }, { status: 500 })
+    }
+
+    // Verificar ownership para AUTHOR role (só pode visualizar próprios posts não publicados)
+    if (session.user.role === UserRole.AUTHOR && post.author.id !== session.userId) {
+      return NextResponse.json({
+        error: 'Acesso negado. Você só pode visualizar seus próprios posts não publicados.'
+      }, { status: 403 })
+    }
 
     return NextResponse.json(post)
   } catch (error) {
@@ -59,27 +75,20 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } },
 ) {
+  // Validar autenticação e permissões
+  let session
   try {
-    // Verify authentication
-    const authToken = cookies().get('admin-auth-token')
-    if (!authToken) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    // Get session and verify user
-    const session = await prisma.session.findUnique({
-      where: { sessionToken: authToken.value },
-      include: { user: true },
+    session = await validateAuth({
+      requireRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EDITOR, UserRole.AUTHOR],
     })
-
-    if (!session || session.expires < new Date()) {
-      return NextResponse.json({ error: 'Session expired' }, { status: 401 })
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode })
     }
+    return NextResponse.json({ error: 'Erro de autenticação' }, { status: 500 })
+  }
 
-    // Check permissions
-    if (!['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'AUTHOR'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
-    }
+  try {
 
     // Parse request body
     const body = await request.json()
@@ -111,6 +120,13 @@ export async function PUT(
 
     if (!existingPost) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })
+    }
+
+    // Verificar ownership para AUTHOR role (só pode editar próprios posts)
+    if (session.user.role === UserRole.AUTHOR && existingPost.authorId !== session.userId) {
+      return NextResponse.json({
+        error: 'Acesso negado. Você só pode editar seus próprios posts.'
+      }, { status: 403 })
     }
 
     // Calculate reading time
@@ -158,7 +174,7 @@ export async function PUT(
         excerpt: post.excerpt,
         content: post.content,
         version: latestVersion + 1,
-        createdBy: session.user.id,
+        createdBy: session.userId,
       },
     })
 
@@ -168,7 +184,7 @@ export async function PUT(
         action: 'UPDATE',
         entityType: 'Post',
         entityId: post.id,
-        userId: session.user.id,
+        userId: session.userId,
         description: `Updated post: ${post.title}`,
       },
     })
@@ -196,18 +212,54 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } },
 ) {
-  // const session = await getServerSession(authOptions)
-  // if (!session || !['ADMIN', 'EDITOR'].includes(session.user.role)) {
-  //   return NextResponse.json({ message: 'Unauthorized' }, { status: 403 })
-  // }
+  // Validar autenticação e permissões
+  let session
+  try {
+    session = await validateAuth({
+      requireRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EDITOR],
+    })
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode })
+    }
+    return NextResponse.json({ error: 'Erro de autenticação' }, { status: 500 })
+  }
 
   try {
+    // Buscar post para audit log e verificar ownership
+    const post = await prisma.post.findUnique({
+      where: { id: params.id },
+      select: { title: true, authorId: true },
+    })
+
+    if (!post) {
+      return NextResponse.json({ error: 'Post não encontrado' }, { status: 404 })
+    }
+
+    // Verificar ownership para AUTHOR role (só pode deletar próprios posts)
+    if (session.user.role === UserRole.AUTHOR && post.authorId !== session.userId) {
+      return NextResponse.json({
+        error: 'Acesso negado. Você só pode deletar seus próprios posts.'
+      }, { status: 403 })
+    }
+
     // Using soft delete by default
     await prisma.post.update({
       where: { id: params.id },
       data: {
         deletedAt: new Date(),
         status: 'DELETED',
+      },
+    })
+
+    // Log action in audit log
+    await prisma.auditLog.create({
+      data: {
+        action: 'DELETE',
+        entityType: 'Post',
+        entityId: params.id,
+        userId: session.userId,
+        description: `Deleted post: ${post.title}`,
       },
     })
 

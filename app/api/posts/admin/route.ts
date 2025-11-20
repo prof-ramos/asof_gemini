@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { Prisma } from '@prisma/client'
+import { Prisma, UserRole } from '@prisma/client'
 
 import prisma from '@/lib/prisma'
 import { AdminListFilters } from '@/types/post'
-// import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { validateAuth, AuthError } from '@/lib/auth'
 
 /**
  * GET /api/posts/admin - Retrieve posts for admin panel with filtering and pagination
@@ -12,10 +11,17 @@ import { AdminListFilters } from '@/types/post'
  * @returns Response with filtered and paginated posts data or error response
  */
 export async function GET(request: Request) {
-  // const session = await getServerSession(authOptions)
-  // if (!session || !['ADMIN', 'EDITOR'].includes(session.user.role)) {
-  //   return NextResponse.json({ message: 'Unauthorized' }, { status: 403 })
-  // }
+  // Validar autenticação e permissões
+  try {
+    await validateAuth({
+      requireRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EDITOR],
+    })
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode })
+    }
+    return NextResponse.json({ error: 'Erro de autenticação' }, { status: 500 })
+  }
 
   try {
     const { searchParams } = new URL(request.url)
