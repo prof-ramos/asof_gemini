@@ -23,13 +23,21 @@ async function main() {
   const initialPassword = process.env.INITIAL_ADMIN_PASSWORD || randomBytes(16).toString('base64')
   const passwordHash = await bcrypt.hash(initialPassword, 12) // 12 salt rounds (mais seguro que 10)
 
-  // Avisar se usando senha gerada aleatoriamente
+  // Avisar se usando senha gerada aleatoriamente (apenas em desenvolvimento)
   if (!process.env.INITIAL_ADMIN_PASSWORD) {
     console.warn('\n⚠️  ATENÇÃO: INITIAL_ADMIN_PASSWORD não configurada!')
-    console.warn('📝  Senha gerada aleatoriamente para o super admin:')
-    console.warn(`    Email: admin@asof.org.br`)
-    console.warn(`    Senha: ${initialPassword}`)
-    console.warn('🔒  ANOTE esta senha e altere após primeiro login!\n')
+
+    // Só exibir senha em ambiente de desenvolvimento
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('📝  Senha gerada aleatoriamente para o super admin:')
+      console.warn(`    Email: admin@asof.org.br`)
+      console.warn(`    Senha: ${initialPassword}`)
+      console.warn('🔒  ANOTE esta senha e altere após primeiro login!\n')
+    } else {
+      console.error('❌  ERRO: INITIAL_ADMIN_PASSWORD é obrigatória em produção!')
+      console.error('🔒  Configure a variável de ambiente e execute o seed novamente.\n')
+      throw new Error('INITIAL_ADMIN_PASSWORD não configurada em ambiente de produção')
+    }
   } else {
     console.log('✅  Usando senha da variável de ambiente INITIAL_ADMIN_PASSWORD\n')
   }

@@ -101,17 +101,3 @@ export async function validateAuth(
     user: session.user,
   }
 }
-
-/**
- * Helper para extrair cookie de autenticação do request
- * Útil para quando não se pode usar cookies() do Next.js
- */
-export function getAuthTokenFromRequest(request: Request): string | null {
-  const cookieHeader = request.headers.get('cookie')
-  if (!cookieHeader) return null
-
-  const cookies = cookieHeader.split(';').map(c => c.trim())
-  const authCookie = cookies.find(c => c.startsWith('admin-auth-token='))
-
-  return authCookie ? authCookie.split('=')[1] : null
-}

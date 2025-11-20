@@ -36,8 +36,9 @@ export async function GET(
     }
 
     // For non-published posts, require authentication
+    let session
     try {
-      await validateAuth({
+      session = await validateAuth({
         requireRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EDITOR, UserRole.AUTHOR],
       })
     } catch (error) {
@@ -45,6 +46,13 @@ export async function GET(
         return NextResponse.json({ error: error.message }, { status: error.statusCode })
       }
       return NextResponse.json({ error: 'Erro de autenticação' }, { status: 500 })
+    }
+
+    // Verificar ownership para AUTHOR role (só pode visualizar próprios posts não publicados)
+    if (session.user.role === UserRole.AUTHOR && post.author.id !== session.userId) {
+      return NextResponse.json({
+        error: 'Acesso negado. Você só pode visualizar seus próprios posts não publicados.'
+      }, { status: 403 })
     }
 
     return NextResponse.json(post)
@@ -112,6 +120,13 @@ export async function PUT(
 
     if (!existingPost) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })
+    }
+
+    // Verificar ownership para AUTHOR role (só pode editar próprios posts)
+    if (session.user.role === UserRole.AUTHOR && existingPost.authorId !== session.userId) {
+      return NextResponse.json({
+        error: 'Acesso negado. Você só pode editar seus próprios posts.'
+      }, { status: 403 })
     }
 
     // Calculate reading time
@@ -211,14 +226,21 @@ export async function DELETE(
   }
 
   try {
-    // Buscar post para audit log
+    // Buscar post para audit log e verificar ownership
     const post = await prisma.post.findUnique({
       where: { id: params.id },
-      select: { title: true },
+      select: { title: true, authorId: true },
     })
 
     if (!post) {
       return NextResponse.json({ error: 'Post não encontrado' }, { status: 404 })
+    }
+
+    // Verificar ownership para AUTHOR role (só pode deletar próprios posts)
+    if (session.user.role === UserRole.AUTHOR && post.authorId !== session.userId) {
+      return NextResponse.json({
+        error: 'Acesso negado. Você só pode deletar seus próprios posts.'
+      }, { status: 403 })
     }
 
     // Using soft delete by default
