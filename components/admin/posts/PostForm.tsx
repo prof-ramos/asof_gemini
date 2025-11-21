@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -136,10 +136,10 @@ export default function PostForm({ mode, initialData, postId, onSave }: PostForm
 
       return () => clearInterval(interval)
     }
-  }, [mode, isDirty, handleSubmit])
+  }, [mode, isDirty, handleSubmit, saveDraft])
 
   // Save as draft
-  const saveDraft = async (data: PostFormData) => {
+  const saveDraft = useCallback(async (data: PostFormData) => {
     setIsSaving(true)
     try {
       const endpoint = mode === 'create' ? '/api/posts' : `/api/posts/${postId}`
@@ -176,7 +176,7 @@ export default function PostForm({ mode, initialData, postId, onSave }: PostForm
     } finally {
       setIsSaving(false)
     }
-  }
+  }, [mode, postId, router, onSave])
 
   // Publish post
   const publishPost = async (data: PostFormData) => {
