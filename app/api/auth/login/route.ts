@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createHash } from 'crypto'
+import { randomBytes } from 'crypto'
 import bcrypt from 'bcryptjs'
 import prisma from '@/lib/prisma'
 import { UserStatus } from '@prisma/client'
@@ -96,10 +96,9 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Gerar token de autenticação
-    const authToken = createHash('sha256')
-      .update(`${user.email}:${Date.now()}:${process.env.NEXTAUTH_SECRET || 'fallback-secret'}`)
-      .digest('hex')
+    // Gerar token de autenticação seguro
+    // Usa randomBytes para gerar um token criptograficamente seguro
+    const authToken = randomBytes(32).toString('hex')
 
     // Criar sessão no banco de dados
     const session = await prisma.session.create({

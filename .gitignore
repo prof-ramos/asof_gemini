@@ -41,7 +41,7 @@ next-env.d.ts
 *.db-journal
 
 # prisma
-/prisma/migrations/*/migration.sql
+# /prisma/migrations/*/migration.sql  # REMOVIDO: Migrations devem ser versionadas
 /node_modules/.prisma
 
 # security

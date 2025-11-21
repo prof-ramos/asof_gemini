@@ -7,6 +7,7 @@
 
 import { PrismaClient, UserRole, UserStatus, ContentStatus, PageType } from '@prisma/client'
 import * as bcrypt from 'bcrypt'
+import { randomBytes } from 'crypto'
 
 const prisma = new PrismaClient()
 
@@ -18,7 +19,28 @@ async function main() {
   // ============================================================================
   console.log('👤 Criando usuários...')
 
-  const passwordHash = await bcrypt.hash('senha123', 10)
+  // Usar senha da variável de ambiente ou gerar uma aleatória segura
+  const initialPassword = process.env.INITIAL_ADMIN_PASSWORD || randomBytes(16).toString('base64')
+  const passwordHash = await bcrypt.hash(initialPassword, 12) // 12 salt rounds (mais seguro que 10)
+
+  // Avisar se usando senha gerada aleatoriamente (apenas em desenvolvimento)
+  if (!process.env.INITIAL_ADMIN_PASSWORD) {
+    console.warn('\n⚠️  ATENÇÃO: INITIAL_ADMIN_PASSWORD não configurada!')
+
+    // Só exibir senha em ambiente de desenvolvimento
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('📝  Senha gerada aleatoriamente para o super admin:')
+      console.warn(`    Email: admin@asof.org.br`)
+      console.warn(`    Senha: ${initialPassword}`)
+      console.warn('🔒  ANOTE esta senha e altere após primeiro login!\n')
+    } else {
+      console.error('❌  ERRO: INITIAL_ADMIN_PASSWORD é obrigatória em produção!')
+      console.error('🔒  Configure a variável de ambiente e execute o seed novamente.\n')
+      throw new Error('INITIAL_ADMIN_PASSWORD não configurada em ambiente de produção')
+    }
+  } else {
+    console.log('✅  Usando senha da variável de ambiente INITIAL_ADMIN_PASSWORD\n')
+  }
 
   const superAdmin = await prisma.user.upsert({
     where: { email: 'admin@asof.org.br' },
@@ -538,10 +560,14 @@ Segunda a Sexta: 9h às 18h`,
   console.log('   - 5 configurações criadas')
   console.log('   - 4 itens de navegação criados')
   console.log('\n🔐 Credenciais de acesso:')
-  console.log('   Super Admin: admin@asof.org.br / senha123')
-  console.log('   Admin: editor@asof.org.br / senha123')
-  console.log('   Autor: autor@asof.org.br / senha123')
-  console.log('\n⚠️  IMPORTANTE: Altere as senhas em produção!')
+  console.log('   Super Admin: admin@asof.org.br')
+  console.log('   Admin: editor@asof.org.br')
+  console.log('   Autor: autor@asof.org.br')
+  console.log(`   Senha: ${process.env.INITIAL_ADMIN_PASSWORD ? '[Configurada via INITIAL_ADMIN_PASSWORD]' : '[Gerada aleatoriamente - ver acima]'}`)
+  console.log('\n⚠️  IMPORTANTE:')
+  console.log('   1. Anote a senha gerada (se aplicável)')
+  console.log('   2. Faça login e ALTERE a senha imediatamente')
+  console.log('   3. Nunca use senhas fracas em produção')
 }
 
 main()

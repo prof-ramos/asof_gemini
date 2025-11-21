@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import prisma from '@/lib/prisma'
 import sharp from 'sharp'
+import { validateAuth, AuthError } from '@/lib/auth'
+import { UserRole } from '@prisma/client'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60 // 60 seconds for file processing
@@ -24,15 +26,20 @@ function getMediaType(mimeType: string): 'IMAGE' | 'VIDEO' | 'DOCUMENT' | 'AUDIO
 }
 
 export async function POST(request: NextRequest) {
+  // Validar autenticação e permissões
+  let session
   try {
-    // Verificar autenticação (o middleware já faz isso, mas é bom ter dupla verificação)
-    const authToken = request.cookies.get('admin-auth-token')?.value
-    if (!authToken) {
-      return NextResponse.json(
-        { error: 'Não autorizado' },
-        { status: 401 }
-      )
+    session = await validateAuth({
+      requireRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EDITOR, UserRole.AUTHOR],
+    })
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode })
     }
+    return NextResponse.json({ error: 'Erro de autenticação' }, { status: 500 })
+  }
+
+  try {
 
     // Parse do form data
     const formData = await request.formData()
@@ -118,11 +125,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Salvar metadados no banco de dados
-    // TODO: Obter userId do token de autenticação
-    // Por enquanto, usar um userId fixo para desenvolvimento
-    const userId = 'dev-user-id'
-
+    // Salvar metadados no banco de dados usando userId da sessão autenticada
     const media = await prisma.media.create({
       data: {
         fileName,
@@ -135,7 +138,7 @@ export async function POST(request: NextRequest) {
         url: blob.url,
         thumbnailUrl,
         path: blob.pathname,
-        uploaderId: userId,
+        uploaderId: session.userId,
       },
       include: {
         uploader: {
@@ -144,6 +147,17 @@ export async function POST(request: NextRequest) {
             email: true,
           },
         },
+      },
+    })
+
+    // Registrar upload no audit log
+    await prisma.auditLog.create({
+      data: {
+        action: 'CREATE',
+        entityType: 'Media',
+        entityId: media.id,
+        userId: session.userId,
+        description: `Uploaded file: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`,
       },
     })
 
