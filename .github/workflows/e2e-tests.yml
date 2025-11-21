@@ -13,6 +13,22 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-latest
 
+    # PostgreSQL service para testes E2E
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: asof_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     strategy:
       fail-fast: false
       matrix:
@@ -31,6 +47,22 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
+      - name: Configurar variáveis de ambiente
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/asof_test" >> $GITHUB_ENV
+          echo "INITIAL_ADMIN_PASSWORD=TestPassword123!@#" >> $GITHUB_ENV
+          echo "NEXTAUTH_SECRET=test-secret-key-minimum-32-chars-long-for-testing" >> $GITHUB_ENV
+          echo "NODE_ENV=test" >> $GITHUB_ENV
+
+      - name: Gerar Prisma Client
+        run: npm run db:generate
+
+      - name: Aplicar migrations
+        run: npm run db:migrate:deploy
+
+      - name: Seed do database
+        run: npm run db:seed
+
       - name: Instalar Playwright Browsers
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
@@ -41,6 +73,9 @@ jobs:
         run: npx playwright test --project=${{ matrix.browser }}
         env:
           CI: true
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/asof_test
+          INITIAL_ADMIN_PASSWORD: TestPassword123!@#
+          NEXTAUTH_SECRET: test-secret-key-minimum-32-chars-long-for-testing
 
       - name: Upload de relatórios de teste
         if: always()
@@ -63,6 +98,22 @@ jobs:
     timeout-minutes: 20
     runs-on: ubuntu-latest
 
+    # PostgreSQL service para testes mobile
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: asof_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
@@ -76,6 +127,22 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
+      - name: Configurar variáveis de ambiente
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/asof_test" >> $GITHUB_ENV
+          echo "INITIAL_ADMIN_PASSWORD=TestPassword123!@#" >> $GITHUB_ENV
+          echo "NEXTAUTH_SECRET=test-secret-key-minimum-32-chars-long-for-testing" >> $GITHUB_ENV
+          echo "NODE_ENV=test" >> $GITHUB_ENV
+
+      - name: Gerar Prisma Client
+        run: npm run db:generate
+
+      - name: Aplicar migrations
+        run: npm run db:migrate:deploy
+
+      - name: Seed do database
+        run: npm run db:seed
+
       - name: Instalar Playwright Browsers
         run: npx playwright install --with-deps chromium
 
@@ -86,6 +153,9 @@ jobs:
         run: npx playwright test --project=mobile-chrome --project=mobile-safari
         env:
           CI: true
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/asof_test
+          INITIAL_ADMIN_PASSWORD: TestPassword123!@#
+          NEXTAUTH_SECRET: test-secret-key-minimum-32-chars-long-for-testing
 
       - name: Upload de relatórios mobile
         if: always()
@@ -100,6 +170,22 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
 
+    # PostgreSQL service para testes de acessibilidade
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: asof_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
@@ -113,6 +199,22 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
+      - name: Configurar variáveis de ambiente
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/asof_test" >> $GITHUB_ENV
+          echo "INITIAL_ADMIN_PASSWORD=TestPassword123!@#" >> $GITHUB_ENV
+          echo "NEXTAUTH_SECRET=test-secret-key-minimum-32-chars-long-for-testing" >> $GITHUB_ENV
+          echo "NODE_ENV=test" >> $GITHUB_ENV
+
+      - name: Gerar Prisma Client
+        run: npm run db:generate
+
+      - name: Aplicar migrations
+        run: npm run db:migrate:deploy
+
+      - name: Seed do database
+        run: npm run db:seed
+
       - name: Instalar Playwright
         run: npx playwright install --with-deps chromium
 
@@ -123,6 +225,9 @@ jobs:
         run: npx playwright test --project=accessibility
         env:
           CI: true
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/asof_test
+          INITIAL_ADMIN_PASSWORD: TestPassword123!@#
+          NEXTAUTH_SECRET: test-secret-key-minimum-32-chars-long-for-testing
 
       - name: Upload de relatórios A11y
         if: always()
@@ -137,6 +242,22 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
 
+    # PostgreSQL service para testes de performance
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: asof_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
@@ -150,6 +271,22 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
+      - name: Configurar variáveis de ambiente
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/asof_test" >> $GITHUB_ENV
+          echo "INITIAL_ADMIN_PASSWORD=TestPassword123!@#" >> $GITHUB_ENV
+          echo "NEXTAUTH_SECRET=test-secret-key-minimum-32-chars-long-for-testing" >> $GITHUB_ENV
+          echo "NODE_ENV=test" >> $GITHUB_ENV
+
+      - name: Gerar Prisma Client
+        run: npm run db:generate
+
+      - name: Aplicar migrations
+        run: npm run db:migrate:deploy
+
+      - name: Seed do database
+        run: npm run db:seed
+
       - name: Instalar Playwright
         run: npx playwright install --with-deps chromium
 
@@ -160,6 +297,9 @@ jobs:
         run: npx playwright test e2e/tests/performance/
         env:
           CI: true
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/asof_test
+          INITIAL_ADMIN_PASSWORD: TestPassword123!@#
+          NEXTAUTH_SECRET: test-secret-key-minimum-32-chars-long-for-testing
 
       - name: Upload de resultados de performance
         if: always()

@@ -23,12 +23,12 @@ async function main() {
   const initialPassword = process.env.INITIAL_ADMIN_PASSWORD || randomBytes(16).toString('base64')
   const passwordHash = await bcrypt.hash(initialPassword, 12) // 12 salt rounds (mais seguro que 10)
 
-  // Avisar se usando senha gerada aleatoriamente (apenas em desenvolvimento)
+  // Avisar se usando senha gerada aleatoriamente (apenas em desenvolvimento/test)
   if (!process.env.INITIAL_ADMIN_PASSWORD) {
     console.warn('\n⚠️  ATENÇÃO: INITIAL_ADMIN_PASSWORD não configurada!')
 
-    // Só exibir senha em ambiente de desenvolvimento
-    if (process.env.NODE_ENV === 'development') {
+    // Só exibir senha em ambiente de desenvolvimento ou test
+    if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
       console.warn('📝  Senha gerada aleatoriamente para o super admin:')
       console.warn(`    Email: admin@asof.org.br`)
       console.warn(`    Senha: ${initialPassword}`)
