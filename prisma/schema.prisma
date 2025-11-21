@@ -1,15 +1,16 @@
 // ASOF CMS Database Schema
 // Prisma schema for comprehensive content management system
 // Version: 1.0.0
-// Database: PostgreSQL (production-ready)
+// Database: PostgreSQL (production) via Prisma Accelerate
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("PRISMA_DATABASE_URL") // Prisma Accelerate for runtime
+  directUrl = env("DATABASE_URL")        // Direct connection for migrations
 }
 
 // ============================================================================
