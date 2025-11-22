@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 import prisma from '@/lib/prisma'
 import { validateAuth, AuthError } from '@/lib/auth'
 import { UserRole } from '@prisma/client'
@@ -12,11 +11,12 @@ import { UserRole } from '@prisma/client'
  */
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params
     const post = await prisma.post.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         author: {
           select: { id: true, name: true, email: true },
@@ -73,7 +73,7 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   // Validar autenticação e permissões
   let session
@@ -89,6 +89,7 @@ export async function PUT(
   }
 
   try {
+    const { id } = await params
 
     // Parse request body
     const body = await request.json()
@@ -109,7 +110,7 @@ export async function PUT(
 
     // Get existing post to check version
     const existingPost = await prisma.post.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         revisions: {
           orderBy: { version: 'desc' },
@@ -135,7 +136,7 @@ export async function PUT(
 
     // Update post
     const post = await prisma.post.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title,
         slug,
@@ -210,7 +211,7 @@ export async function PUT(
  */
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   // Validar autenticação e permissões
   let session
@@ -226,9 +227,11 @@ export async function DELETE(
   }
 
   try {
+    const { id } = await params
+
     // Buscar post para audit log e verificar ownership
     const post = await prisma.post.findUnique({
-      where: { id: params.id },
+      where: { id },
       select: { title: true, authorId: true },
     })
 
@@ -245,7 +248,7 @@ export async function DELETE(
 
     // Using soft delete by default
     await prisma.post.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         deletedAt: new Date(),
         status: 'DELETED',
@@ -257,7 +260,7 @@ export async function DELETE(
       data: {
         action: 'DELETE',
         entityType: 'Post',
-        entityId: params.id,
+        entityId: id,
         userId: session.userId,
         description: `Deleted post: ${post.title}`,
       },
