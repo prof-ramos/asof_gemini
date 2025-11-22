@@ -2,10 +2,12 @@ import AdminHeader from '@/components/admin/AdminHeader'
 import PageHeader from '@/components/admin/PageHeader'
 
 interface EditPostPageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
-export default function EditPostPage({ params }: EditPostPageProps) {
+export default async function EditPostPage({ params }: EditPostPageProps) {
+  const { id } = await params
+
   return (
     <>
       <AdminHeader />
@@ -15,7 +17,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
       />
       <div className="px-6 py-8">
         {/* PostForm will be added here with pre-filled data */}
-        <p>Carregando dados do post {params.id}...</p>
+        <p>Carregando dados do post {id}...</p>
       </div>
     </>
   )

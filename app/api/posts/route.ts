@@ -66,7 +66,8 @@ export async function GET(request: Request) {
 export async function POST(request: NextRequest) {
   try {
     // Verify authentication
-    const authToken = cookies().get('admin-auth-token')
+    const cookieStore = await cookies()
+    const authToken = cookieStore.get('admin-auth-token')
     if (!authToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
